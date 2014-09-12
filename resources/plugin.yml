@@ -1,0 +1,10 @@
+name: ChatLog
+version: 1.0
+descriptipn: Chatlog to report players
+author: McLive
+website: www.freecraft.eu
+
+main: eu.mclive.ChatLog.ChatLog
+commands:
+  chatreport:
+    description: Chatlog to report players
