@@ -94,7 +94,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 			            if(messagesSent >= 1) {
 			            	String reportid = UUID.randomUUID().toString().replace("-", "");
 			            	ChatLog.INSTANCE.sqlHandler.setReport(server, p2, pluginstart, timestamp, reportid);
-			            	p.sendMessage("URL: http://freecraft.eu/chatreport/" + reportid);
+			            	p.sendMessage("URL: http://freecraft.eu/chatlog/?report=" + reportid);
 			            	//SELECT * FROM `messages` WHERE 'e01c88e99e8f4530a292aaba7e236e03'  LIKE CONCAT('%',`reportids` , '%');
 				            Bukkit.getScheduler().runTask(INSTANCE, new Runnable(){
 				            	@Override
