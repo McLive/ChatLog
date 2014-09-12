@@ -61,7 +61,7 @@ public class MySQL {
 	public void refreshConnect() throws Exception {
 		Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
-		System.out.println("[OITC] 'MySQL' has refrehed the Connection!");
+		System.out.println("[ChatLog] 'MySQL' has refrehed the Connection!");
 	}
 	
 	public Connection getConnection(){

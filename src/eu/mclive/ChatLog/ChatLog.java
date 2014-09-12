@@ -33,7 +33,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 			this.logger.info("[ChatLog] Now Currently Loading MySQL");
 			sql = new MySQL(this);
 			sqlHandler = new MySQLHandler(sql);
-			//startRefresh();
+			startRefresh();
 			this.logger.info("[ChatLog] 'MySQL' has successfully loaded!");
 		} catch (Exception e1) {
 			this.logger.info("[ChatLog] WARNING, FAILED TO LOAD MySQL " + e1.toString());
@@ -119,5 +119,15 @@ public class ChatLog extends JavaPlugin implements Listener {
 		}
 		return false;
 	}
-	
+	public void startRefresh(){
+		Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
+			public void run() {
+				try {
+					sql.refreshConnect();
+				} catch (Exception e) {
+					ChatLog.INSTANCE.logger.info("[ChatLog] WARNING, FAILED TO RELOAD MySQL" + e.toString());
+				}
+			}
+		}, 20L*10, 20L * 1800);
+	}
 }
