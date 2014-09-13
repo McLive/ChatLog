@@ -1,6 +1,7 @@
 package eu.mclive.ChatLog;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -98,6 +99,12 @@ public class ChatLog extends JavaPlugin implements Listener {
 			            Date now = new Date();
 			            Long timestamp = new Long(now.getTime()/1000);
 			            String server = getConfig().getString("server");
+			            boolean mode = getConfig().getBoolean("minigames-mode");
+			            if(mode == false) { //disabled minigame mode? Only get messages from last 15 minutes!
+			            	Calendar cal = Calendar.getInstance();
+			            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-15); //15 minutes before
+			            	pluginstart = cal.getTimeInMillis() / 1000;
+			            }
 			            int messagesSent = sqlHandler.checkMessage(server, p2, pluginstart, timestamp);
 			            if(messagesSent >= 1) {
 			            	ChatLog.this.logger.info("[" + p.getName() + "] getting ChatLog from " + p2);
