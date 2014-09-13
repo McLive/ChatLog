@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
@@ -49,23 +48,6 @@ public class MySQLHandler {
 		}
 		return 0;
 	}
-	/*
-	public void setReport(String server, String p2, Long pluginstart, Long timestamp, String reportid) {
-		Connection conn = sql.getConnection();
-		System.out.println("Reportid: " + reportid);
-		try (PreparedStatement st = conn.prepareStatement("UPDATE messages SET reportids = CONCAT(ifnull(reportids, ''), ?) WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
-			st.setString(1, reportid + ",");
-			st.setString(2, server);
-			st.setString(3, p2);
-			st.setLong(4, pluginstart);
-			st.setLong(5, timestamp);
-			st.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	*/
 	public void setReport(String server, String p2, Long pluginstart, Long timestamp, String reportid) {
 		Connection conn = sql.getConnection();
 		ResultSet rs = null;
@@ -94,28 +76,5 @@ public class MySQLHandler {
 			e.printStackTrace();
 		}
 	}
-	public void addKick(String staff, String opfer, String msg, String server, Long datum) {
-		Connection conn = sql.getConnection();
-		try (PreparedStatement st = conn.prepareStatement("INSERT INTO kicks (team, name, grund, server, datum) VALUES (?,?,?,?,?);")) {
-			st.setString(1, staff);
-			st.setString(2, opfer);
-			st.setString(3, msg);
-			st.setString(4, server);
-			st.setLong(5, datum);
-			st.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	public void removeBan(String name) {
-		Connection conn = sql.getConnection();
-		try (PreparedStatement st = conn.prepareStatement("DELETE FROM bans WHERE name = ?")) {
-			st.setString(1, name);
-			st.executeUpdate();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}	
+
 }

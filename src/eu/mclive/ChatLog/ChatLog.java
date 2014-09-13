@@ -1,6 +1,7 @@
 package eu.mclive.ChatLog;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -14,7 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
+import org.mcstats.Metrics;
 
 import eu.mclive.ChatLog.MySQL.MySQL;
 import eu.mclive.ChatLog.MySQL.MySQLHandler;
@@ -50,6 +51,13 @@ public class ChatLog extends JavaPlugin implements Listener {
         Date now = new Date();
         pluginstart = new Long(now.getTime()/1000);
 		
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            System.out.println("[ChatLog] Failled to start Metrics.");
+        }
+        
 		System.out.println("[ChatLog] Plugin erfolgreich gestartet!");
 	}
 	
@@ -107,14 +115,6 @@ public class ChatLog extends JavaPlugin implements Listener {
 			            }
 			    	}
 			    });
-				/*
-			     Player p2 = Bukkit.getPlayer(args[0]);
-			     if (p2 != null) {
-			    	 String reportid = UUID.randomUUID().toString().replace("-", "");
-			     } else {
-			     	p.sendMessage("Dieser Spieler ist offline!");
-			     }
-			     */
 			}
 		}
 		return false;

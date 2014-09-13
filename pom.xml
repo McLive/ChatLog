@@ -24,6 +24,32 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>org.mcstats.*:*</include>
+                        </includes>
+                    </artifactSet>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.mcstats</pattern>
+                            <shadedPattern>eu.mclive.ChatLog</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
   
@@ -34,18 +60,9 @@
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
 		<repository>
-			<id>vault-repo</id>
-			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-		</repository>
-		<repository>
-			<id>sk89q-repo</id>
-			<url>http://maven.sk89q.com/repo/</url>
-		</repository>
-		<repository>
-  			<id>dakani</id>
-  			<name>Dakani Nexus Repo</name>
-  			<url>http://repo.dakanilabs.com/content/repositories/public</url>
-		</repository>
+            <id>Plugin Metrics</id>
+            <url>http://repo.mcstats.org/content/repositories/public</url>
+        </repository>
     </repositories>
     
     <dependencies>
@@ -58,23 +75,11 @@
             <type>jar</type>
         </dependency>
 		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldguard</artifactId>
-			<version>LATEST</version>
-			<scope>compile</scope>
-			<type>jar</type>
-		</dependency>
-        <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
-            <version>1.2.32</version>
-            <scope>provided</scope>
+            <groupId>org.mcstats.bukkit</groupId>
+            <artifactId>metrics</artifactId>
+            <version>R8-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-		<dependency>
-  			<groupId>lib.PatPeter.SQLibrary</groupId>
-  			<artifactId>SQLibrary</artifactId>
-  			<version>7.1</version>
-		</dependency>
     </dependencies>
   
 </project>
