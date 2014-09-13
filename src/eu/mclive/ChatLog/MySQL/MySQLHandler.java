@@ -7,6 +7,8 @@ import java.sql.SQLException;
 
 import org.bukkit.entity.Player;
 
+import eu.mclive.ChatLog.ChatLog;
+
 public class MySQLHandler {
 	
 	private MySQL sql;
@@ -40,7 +42,7 @@ public class MySQLHandler {
 			st.setLong(4, timestamp);
 			rs = st.executeQuery();
 			rs.first();
-			System.out.println("Von " + p2 + " gesendete Nachrichten seit Pluginstart: " + rs.getInt("count") );
+			//System.out.println("Von " + p2 + " gesendete Nachrichten seit Pluginstart: " + rs.getInt("count") );
 			return rs.getInt("count");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -51,7 +53,7 @@ public class MySQLHandler {
 	public void setReport(String server, String p2, Long pluginstart, Long timestamp, String reportid) {
 		Connection conn = sql.getConnection();
 		ResultSet rs = null;
-		System.out.println("Reportid: " + reportid);
+		ChatLog.INSTANCE.logger.info("ReportID: " + reportid);
 		try (PreparedStatement st = conn.prepareStatement("SELECT * FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
 			st.setString(1, server);
 			st.setString(2, p2);

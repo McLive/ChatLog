@@ -1,6 +1,5 @@
 package eu.mclive.ChatLog;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
@@ -22,7 +21,7 @@ import eu.mclive.ChatLog.MySQL.MySQLHandler;
 
 public class ChatLog extends JavaPlugin implements Listener {
 	
-	public final Logger logger = Logger.getLogger("Minecraft");
+	public final Logger logger = getLogger();
 	public static MySQL sql;
 	public MySQLHandler sqlHandler;
 	public static ChatLog INSTANCE;
@@ -31,38 +30,37 @@ public class ChatLog extends JavaPlugin implements Listener {
 	public void onEnable() {
 		ChatLog.INSTANCE = this;
 		try {
-			this.logger.info("[ChatLog] Now Currently Loading MySQL");
+			logger.info("Loading MySQL ...");
 			sql = new MySQL(this);
 			sqlHandler = new MySQLHandler(sql);
 			startRefresh();
-			this.logger.info("[ChatLog] 'MySQL' has successfully loaded!");
+			logger.info("MySQL successfully loaded.");
 		} catch (Exception e1) {
-			this.logger.info("[ChatLog] WARNING, FAILED TO LOAD MySQL " + e1.toString());
+			logger.warning("Failled to load MySQL: " + e1.toString());
 		}
 		
-	    if (!new File(getDataFolder(), "config.yml").exists()) {
-	    	saveDefaultConfig();
-	    }
-	    getConfig().addDefault("server", "server");
-	    saveConfig();
+		getConfig().options().copyDefaults(true);
+        saveConfig();
 		
 		getServer().getPluginManager().registerEvents(this, this);
 		
         Date now = new Date();
         pluginstart = new Long(now.getTime()/1000);
 		
+        logger.info("Loading Metrics ...");
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
+            logger.info("Metrics successfully loaded.");
         } catch (IOException e) {
-            System.out.println("[ChatLog] Failled to start Metrics.");
+            logger.warning("Failled to load Metrics.");
         }
         
-		System.out.println("[ChatLog] Plugin erfolgreich gestartet!");
+		logger.info("Plugin successfully started.");
 	}
 	
 	public void onDisable() {
-		System.out.println("[ChatLog] Plugin erfolgreich gestoppt!");
+		logger.info("Plugin successfully stopped.");
 	}
 	
 	@EventHandler
@@ -73,8 +71,8 @@ public class ChatLog extends JavaPlugin implements Listener {
 	    	public void run() {
 	            Date now = new Date();
 	            Long timestamp = new Long(now.getTime()/1000);
-	            String server = ChatLog.this.getConfig().getString("server");
-	            System.out.println(server + p + msg + timestamp);
+	            String server = getConfig().getString("server");
+	            //System.out.println(server + p + msg + timestamp);
 	            ChatLog.INSTANCE.sqlHandler.addMessage(server, p, msg, timestamp);
 	    	}
 	    });
@@ -82,7 +80,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Diesen Befehl können nur Spieler ausführen!");
+			sender.sendMessage(ChatColor.RED + "Only Players can run this command!");
 			return true;
 		}
 
@@ -90,28 +88,25 @@ public class ChatLog extends JavaPlugin implements Listener {
 
 		if (cmd.getName().equalsIgnoreCase("chatreport")) {
 			if (args.length == 0 || args.length > 1) {
-				p.sendMessage("Type " + commandLabel + " <playername> to get all messgaes sent by that Player.");
+				p.sendMessage("§7§m                                                                     ");
+				p.sendMessage("§e/" + commandLabel + " <playername> §7- §agets the Chatlog from a player.");
+				p.sendMessage("§7§m                                                                     ");
 			} else if (args.length == 1) {
 				final String p2 = args[0];
 				Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 					public void run() {
 			            Date now = new Date();
 			            Long timestamp = new Long(now.getTime()/1000);
-			            String server = ChatLog.this.getConfig().getString("server");
-			            int messagesSent = ChatLog.INSTANCE.sqlHandler.checkMessage(server, p2, pluginstart, timestamp);
+			            String server = getConfig().getString("server");
+			            int messagesSent = sqlHandler.checkMessage(server, p2, pluginstart, timestamp);
 			            if(messagesSent >= 1) {
+			            	ChatLog.this.logger.info("[" + p.getName() + "] getting ChatLog from " + p2);
 			            	String reportid = UUID.randomUUID().toString().replace("-", "");
-			            	ChatLog.INSTANCE.sqlHandler.setReport(server, p2, pluginstart, timestamp, reportid);
-			            	p.sendMessage("URL: http://freecraft.eu/chatlog/?report=" + reportid);
-			            	//SELECT * FROM `messages` WHERE 'e01c88e99e8f4530a292aaba7e236e03'  LIKE CONCAT('%',`reportids` , '%');
-				            Bukkit.getScheduler().runTask(INSTANCE, new Runnable(){
-				            	@Override
-				            	public void run() {
-				            		System.out.println("Test!");
-				            	}
-				            });
+			            	sqlHandler.setReport(server, p2, pluginstart, timestamp, reportid);
+			            	String URL = getConfig().getString("URL");
+			            	p.sendMessage("§eURL: §a" + URL + reportid);
 			            } else {
-			            	p.sendMessage("Dieser Spieler hat noch keine Nachrichten gesendet!");
+			            	p.sendMessage("§cNo messages found from " + p2);
 			            }
 			    	}
 			    });
@@ -125,7 +120,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 				try {
 					sql.refreshConnect();
 				} catch (Exception e) {
-					ChatLog.INSTANCE.logger.info("[ChatLog] WARNING, FAILED TO RELOAD MySQL" + e.toString());
+					logger.warning("Failled to reload MySQL: " + e.toString());
 				}
 			}
 		}, 20L*10, 20L * 1800);

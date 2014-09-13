@@ -1,0 +1,16 @@
+# Default Config
+# 
+# minigames-mode: true/false
+# Set this to "true" if you want an chatreport to show every message from an user since the plugin has started.
+# If you set it to "false", an chatreport will only show messages from an user of the last 15 minutes
+# 
+# server: Servername
+# Set the servername here. It will show up on the webpage.
+# 
+# URL: URL to webpage
+# Set the URL to your webpage here. It will be send to the user after doing /chatreport <player>.
+# The reportid will be added at the end.
+# 
+minigames-mode: false
+server: Servername
+URL: http://freecraft.eu/chatlog/?report=
