@@ -25,8 +25,8 @@ public class MySQL {
 	
 	private Connection conn;
 	
-	public MySQL(ChatLog fcb) throws Exception{
-		plugin = fcb;
+	public MySQL(ChatLog cl) throws Exception{
+		plugin = cl;
 		File file = new File(plugin.getDataFolder(), "mysql.yml");
 		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 		

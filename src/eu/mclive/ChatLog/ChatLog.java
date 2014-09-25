@@ -46,7 +46,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 		
         Date now = new Date();
-        pluginstart = new Long(now.getTime()/1000);
+        pluginstart = new Long(now.getTime()/1000L);
 		
         logger.info("Loading Metrics ...");
         try {
@@ -56,6 +56,8 @@ public class ChatLog extends JavaPlugin implements Listener {
         } catch (IOException e) {
             logger.warning("Failled to load Metrics.");
         }
+        
+        cleanup();
         
 		logger.info("Plugin successfully started.");
 	}
@@ -73,8 +75,12 @@ public class ChatLog extends JavaPlugin implements Listener {
 	            Date now = new Date();
 	            Long timestamp = new Long(now.getTime()/1000);
 	            String server = getConfig().getString("server");
+	            String bypassChar = getConfig().getString("bypass-with-beginning-char");
+	            String bypassPermission = getConfig().getString("bypass-with-permission");
 	            //System.out.println(server + p + msg + timestamp);
-	            ChatLog.INSTANCE.sqlHandler.addMessage(server, p, msg, timestamp);
+	            if( bypassChar.isEmpty() || ( msg.startsWith(bypassChar) && !p.hasPermission(bypassPermission) ) || !msg.startsWith(bypassChar) ) {
+	            	ChatLog.INSTANCE.sqlHandler.addMessage(server, p, msg, timestamp);
+	            }
 	    	}
 	    });
 	}
@@ -103,7 +109,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 			            if(mode == false) { //disabled minigame mode? Only get messages from last 15 minutes!
 			            	Calendar cal = Calendar.getInstance();
 			            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-15); //15 minutes before
-			            	pluginstart = cal.getTimeInMillis() / 1000;
+			            	pluginstart = cal.getTimeInMillis() / 1000L;
 			            }
 			            int messagesSent = sqlHandler.checkMessage(server, p2, pluginstart, timestamp);
 			            if(messagesSent >= 1) {
@@ -121,7 +127,32 @@ public class ChatLog extends JavaPlugin implements Listener {
 		}
 		return false;
 	}
-	public void startRefresh(){
+	public void cleanup() {
+		final String server = getConfig().getString("server");
+		boolean doCleanup = getConfig().getBoolean("Cleanup.enabled");
+		int since = getConfig().getInt("Cleanup.since");
+		
+		if(doCleanup) {
+			logger.info("Doing Cleanup...");
+			Calendar cal = Calendar.getInstance();
+			Date now = new Date();
+			cal.setTime(now);
+			cal.add(Calendar.DATE, -since); // subtract days from config
+		
+			final Long timestamp = cal.getTimeInMillis() / 1000L;
+
+		    Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+		    	public void run() {
+		    		sqlHandler.delete(server, timestamp);
+		    	}
+		    });
+		    
+		} else {
+			logger.info("Skipping Cleanup because it is disabled.");
+		}
+	}
+	
+	public void startRefresh() {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
 			public void run() {
 				try {

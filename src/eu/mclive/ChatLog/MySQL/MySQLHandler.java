@@ -78,5 +78,20 @@ public class MySQLHandler {
 			e.printStackTrace();
 		}
 	}
-
+	public void delete(String server, Long timestamp) {
+		Connection conn = sql.getConnection();
+		try (PreparedStatement st = conn.prepareStatement("DELETE FROM messages WHERE server = ? AND timestamp < ? ")) {
+			st.setString(1, server);
+			st.setLong(2, timestamp);
+			int rows = st.executeUpdate();
+			if(rows > 0) {
+				ChatLog.INSTANCE.logger.info("Deleted " + rows + " old messages!");
+			} else {
+				ChatLog.INSTANCE.logger.info("There were no old messages to delete.");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

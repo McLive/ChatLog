@@ -11,6 +11,20 @@
 # Set the URL to your webpage here. It will be send to the user after doing /chatreport <player>.
 # The reportid will be added at the end.
 # 
+# bypass-with-beginning-chat: 
+# If yout set an custom letter here, every message beginning with that char won't be logged if the player has the permission you set one line down.
+# set it to '' (empty) will log every message. This is helpful for plugins which handles messages like that as a staffChat or something like that.
+# 
+# Cleanup
+# enabled: false -- set it to true and it will delete messages older than 14 days (change with "since")
+# since: 14 -- delete messages older than ... days
+# cleanup will run after serverstart
+# 
 minigames-mode: false
-server: Servername
+server: 'Servername'
 URL: http://freecraft.eu/chatlog/?report=
+bypass-with-beginning-char: '#'
+bypass-with-permission: 'ChatLog.canbypass'
+Cleanup:
+  enabled: false
+  since: 14
