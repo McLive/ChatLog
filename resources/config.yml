@@ -20,6 +20,9 @@
 # since: 14 -- delete messages older than ... days
 # cleanup will run after serverstart
 # 
+# use-AsyncChatEvent
+# Toggle between AsyncChatEvent and ChatEvent (usefull for tekkit etc...)
+# 
 minigames-mode: false
 server: 'Servername'
 URL: http://freecraft.eu/chatlog/?report=
@@ -28,3 +31,4 @@ bypass-with-permission: 'ChatLog.canbypass'
 Cleanup:
   enabled: false
   since: 14
+use-AsyncChatEvent: true
