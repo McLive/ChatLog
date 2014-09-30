@@ -11,10 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -44,7 +41,12 @@ public class ChatLog extends JavaPlugin implements Listener {
 		getConfig().options().copyDefaults(true);
         saveConfig();
 		
-		getServer().getPluginManager().registerEvents(this, this);
+        if(getConfig().getBoolean("use-AsyncChatEvent")) {
+        	getServer().getPluginManager().registerEvents(new AsyncChatListener(this), this);
+        } else {
+        	logger.info("Using NON-Async ChatEvent.");
+        	getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+        }
 		
         Date now = new Date();
         pluginstart = new Long(now.getTime()/1000L);
@@ -66,23 +68,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	public void onDisable() {
 		logger.info("Plugin successfully stopped.");
 	}
-	
-	@EventHandler
-	public void onPlayerChat(AsyncPlayerChatEvent e) {
-		if(getConfig().getBoolean("use-AsyncChatEvent")) {
-			Player p = e.getPlayer();
-			String msg = e.getMessage();
-			addMessage(p, msg);
-		}
-	}
-	public void onPlayerChat2(PlayerChatEvent e) {
-		if(!getConfig().getBoolean("use-AsyncChatEvent")) {
-			Player p = e.getPlayer();
-			String msg = e.getMessage();
-			addMessage(p, msg);
-		}
-	}
-	
+		
 	public void addMessage(final Player p, final String msg) {
 	    Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 	    	public void run() {
