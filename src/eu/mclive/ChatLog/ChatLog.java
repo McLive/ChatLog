@@ -47,7 +47,9 @@ public class ChatLog extends JavaPlugin implements Listener {
         	logger.info("Using NON-Async ChatEvent.");
         	getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         }
-		
+		//if(getConfig().getBoolean("Commands.log")) {
+			getServer().getPluginManager().registerEvents(new CommandLogger(this), this);
+		//}
         Date now = new Date();
         pluginstart = new Long(now.getTime()/1000L);
 		
@@ -79,7 +81,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	            String bypassPermission = getConfig().getString("bypass-with-permission");
 	            //System.out.println(server + p + msg + timestamp);
 	            if( bypassChar.isEmpty() || ( msg.startsWith(bypassChar) && !p.hasPermission(bypassPermission) ) || !msg.startsWith(bypassChar) ) {
-	            	ChatLog.INSTANCE.sqlHandler.addMessage(server, p, msg, timestamp);
+	            	ChatLog.INSTANCE.sqlHandler.addMessage(server, p, msg, timestamp, "chat");
 	            }
 	    	}
 	    });
@@ -113,7 +115,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 			            }
 			            int messagesSent = sqlHandler.checkMessage(server, p2, pluginstart, timestamp);
 			            if(messagesSent >= 1) {
-			            	ChatLog.this.logger.info("[" + p.getName() + "] getting ChatLog from " + p2);
+			            	logger.info("[" + p.getName() + "] getting ChatLog from " + p2);
 			            	String reportid = UUID.randomUUID().toString().replace("-", "");
 			            	sqlHandler.setReport(server, p2, pluginstart, timestamp, reportid);
 			            	String URL = getConfig().getString("URL");

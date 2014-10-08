@@ -32,3 +32,9 @@ Cleanup:
   enabled: false
   since: 14
 use-AsyncChatEvent: true
+Commands:
+  log: true
+  blacklist:
+  - login
+  - register
+  - msg

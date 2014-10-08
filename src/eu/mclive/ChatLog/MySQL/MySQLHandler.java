@@ -17,15 +17,18 @@ public class MySQLHandler {
 		sql = mysql;
 		sql.queryUpdate("CREATE TABLE IF NOT EXISTS messages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),PRIMARY KEY (id))");
 		sql.queryUpdate("CREATE TABLE IF NOT EXISTS reportmessages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),reportid text,PRIMARY KEY (id))");
+		//ALTER TABLE reportmessages ADD type VARCHAR(400) AFTER reportid;
+		//ALTER TABLE messages ADD type VARCHAR(400) AFTER timestamp;
 	}
 	
-	public void addMessage(String server, Player p, String msg, Long timestamp) {
+	public void addMessage(String server, Player p, String msg, Long timestamp, String type) {
 		Connection conn = sql.getConnection();
-		try (PreparedStatement st = conn.prepareStatement("INSERT INTO messages (server, name, message, timestamp) VALUES (?,?,?,?);")) {
+		try (PreparedStatement st = conn.prepareStatement("INSERT INTO messages (server, name, message, timestamp, type) VALUES (?,?,?,?,?);")) {
 			st.setString(1, server);
 			st.setString(2, p.getName());
 			st.setString(3, msg);
 			st.setLong(4, timestamp);
+			st.setString(5, type);
 			st.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
