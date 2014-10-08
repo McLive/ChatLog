@@ -25,7 +25,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	public MySQLHandler sqlHandler;
 	public static ChatLog INSTANCE;
 	Long pluginstart = null;
-	
+	private String test;
 	public void onEnable() {
 		ChatLog.INSTANCE = this;
 		try {
