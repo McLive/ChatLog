@@ -22,10 +22,11 @@ public class ChatLog extends JavaPlugin implements Listener {
 	
 	public final Logger logger = getLogger();
 	public static MySQL sql;
+	public static Messages messages;
 	public MySQLHandler sqlHandler;
 	public static ChatLog INSTANCE;
 	Long pluginstart = null;
-	private String test;
+	
 	public void onEnable() {
 		ChatLog.INSTANCE = this;
 		try {
@@ -37,6 +38,8 @@ public class ChatLog extends JavaPlugin implements Listener {
 		} catch (Exception e1) {
 			logger.warning("Failled to load MySQL: " + e1.toString());
 		}
+		
+		messages = new Messages(this);
 		
 		getConfig().options().copyDefaults(true);
         saveConfig();
@@ -96,7 +99,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 		if (cmd.getName().equalsIgnoreCase("chatreport")) {
 			if (args.length == 0 || args.length > 1) {
 				p.sendMessage("§7§m                                                                     ");
-				p.sendMessage("§e/" + commandLabel + " <playername> §7- §agets the Chatlog from a player.");
+				p.sendMessage(messages.help.replace("%cmd%", "/" + commandLabel));
 				p.sendMessage("§7§m                                                                     ");
 			} else if (args.length == 1) {
 				final String p2 = args[0];
@@ -117,9 +120,9 @@ public class ChatLog extends JavaPlugin implements Listener {
 			            	String reportid = UUID.randomUUID().toString().replace("-", "");
 			            	sqlHandler.setReport(server, p2, pluginstart, timestamp, reportid);
 			            	String URL = getConfig().getString("URL");
-			            	p.sendMessage("§eURL: §a" + URL + reportid);
+			            	p.sendMessage(messages.url.replace("%url%", URL + reportid));
 			            } else {
-			            	p.sendMessage("§cNo messages found from " + p2);
+			            	p.sendMessage(messages.error.replace("%name%", p2));
 			            }
 			    	}
 			    });
