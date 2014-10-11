@@ -116,7 +116,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 			            }
 			            int messagesSent = sqlHandler.checkMessage(server, p2, pluginstart, timestamp);
 			            if(messagesSent >= 1) {
-			            	ChatLog.this.logger.info("[" + p.getName() + "] getting ChatLog from " + p2);
+			            	logger.info("[" + p.getName() + "] getting ChatLog from " + p2);
 			            	String reportid = UUID.randomUUID().toString().replace("-", "");
 			            	sqlHandler.setReport(server, p2, pluginstart, timestamp, reportid);
 			            	String URL = getConfig().getString("URL");

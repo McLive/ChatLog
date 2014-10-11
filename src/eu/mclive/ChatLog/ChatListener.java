@@ -1,5 +1,6 @@
 package eu.mclive.ChatLog;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +20,7 @@ public class ChatListener implements Listener {
 		}
 		final Player p = e.getPlayer();
 		final String msg = e.getMessage();
-		plugin.addMessage(p, msg);
+		plugin.addMessage(p, ChatColor.stripColor(msg));
 	}
 	
 }
