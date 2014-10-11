@@ -14,6 +14,9 @@ public class ChatListener implements Listener {
 
 	@EventHandler
 	public void onPlayerChat2(final PlayerChatEvent e) {
+		if(e.isCancelled()) {
+			return;
+		}
 		final Player p = e.getPlayer();
 		final String msg = e.getMessage();
 		plugin.addMessage(p, msg);

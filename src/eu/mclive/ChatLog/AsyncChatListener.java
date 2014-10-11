@@ -14,6 +14,9 @@ public class AsyncChatListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerChat(final AsyncPlayerChatEvent e) {
+		if(e.isCancelled()) {
+			return;
+		}
 		final Player p = e.getPlayer();
 		final String msg = e.getMessage();
 		plugin.addMessage(p, msg);
