@@ -51,31 +51,6 @@ public class MySQLHandler {
 		}
 		return 0;
 	}
-	public int checkMessage2(String server, List<String> users, Long pluginstart, Long timestamp) {
-		StringBuilder builder = new StringBuilder();
-		for( int i = 0 ; i < users.size(); i++ ) {
-		    builder.append(" name = ? &&");
-		}
-		System.out.println(builder.toString());
-		/*
-		Connection conn = sql.getConnection();
-		ResultSet rs = null;
-		try (PreparedStatement st = conn.prepareStatement("SELECT COUNT(*) AS count FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
-			st.setString(1, server);
-			st.setString(2, p2);
-			st.setLong(3, pluginstart);
-			st.setLong(4, timestamp);
-			rs = st.executeQuery();
-			rs.first();
-			//System.out.println("Von " + p2 + " gesendete Nachrichten seit Pluginstart: " + rs.getInt("count") );
-			return rs.getInt("count");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
-		return 0;
-	}
 	public void setReport(String server, List<String> users, Long pluginstart, Long timestamp, String reportid) {
 		Connection conn = sql.getConnection();
 		ResultSet rs = null;
