@@ -17,6 +17,7 @@ public class Messages {
 	public String help2;
 	public String error;
 	public String url;
+	public String errorNotSaved;
 	
 	public Messages(ChatLog cl) {
 		this.plugin = cl;
@@ -27,6 +28,7 @@ public class Messages {
 		cfg.addDefault("help", "&e%cmd% <playername> &7- &agets the Chatlog from a player.");
 		cfg.addDefault("error", "&cNo messages found from %name%");
 		cfg.addDefault("url", "&eURL: &a%url%");
+		cfg.addDefault("errorNotSaved", "&cNo report saved");
 
 		cfg.options().copyDefaults(true);
 		try {
@@ -38,6 +40,7 @@ public class Messages {
 		help = addcolors(cfg.getString("help"));
 		error = addcolors(cfg.getString("error"));
 		url = addcolors(cfg.getString("url"));
+		errorNotSaved = addcolors(cfg.getString("errorNotSaved"));
 		
 	}
 	

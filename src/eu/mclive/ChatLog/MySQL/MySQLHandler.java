@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
@@ -50,32 +51,59 @@ public class MySQLHandler {
 		}
 		return 0;
 	}
-	public void setReport(String server, String p2, Long pluginstart, Long timestamp, String reportid) {
+	public int checkMessage2(String server, List<String> users, Long pluginstart, Long timestamp) {
+		StringBuilder builder = new StringBuilder();
+		for( int i = 0 ; i < users.size(); i++ ) {
+		    builder.append(" name = ? &&");
+		}
+		System.out.println(builder.toString());
+		/*
 		Connection conn = sql.getConnection();
 		ResultSet rs = null;
-		ChatLog.INSTANCE.logger.info("ReportID: " + reportid);
-		try (PreparedStatement st = conn.prepareStatement("SELECT * FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
+		try (PreparedStatement st = conn.prepareStatement("SELECT COUNT(*) AS count FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
 			st.setString(1, server);
 			st.setString(2, p2);
 			st.setLong(3, pluginstart);
 			st.setLong(4, timestamp);
 			rs = st.executeQuery();
-			while(rs.next()) {
-				try (PreparedStatement st2 = conn.prepareStatement("INSERT INTO reportmessages (server, name, message, timestamp, reportid) VALUES (?,?,?,?,?);")) {
-					st2.setString(1, server);
-					st2.setString(2, p2);
-					st2.setString(3, rs.getString("message"));
-					st2.setLong(4, rs.getLong("timestamp"));
-					st2.setString(5, reportid);
-					st2.executeUpdate();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			rs.first();
+			//System.out.println("Von " + p2 + " gesendete Nachrichten seit Pluginstart: " + rs.getInt("count") );
+			return rs.getInt("count");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		*/
+		return 0;
+	}
+	public void setReport(String server, List<String> users, Long pluginstart, Long timestamp, String reportid) {
+		Connection conn = sql.getConnection();
+		ResultSet rs = null;
+		ChatLog.INSTANCE.logger.info("ReportID: " + reportid);
+		for(String user: users) {
+			try (PreparedStatement st = conn.prepareStatement("SELECT * FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
+				st.setString(1, server);
+				st.setString(2, user);
+				st.setLong(3, pluginstart);
+				st.setLong(4, timestamp);
+				rs = st.executeQuery();
+				while(rs.next()) {
+					try (PreparedStatement st2 = conn.prepareStatement("INSERT INTO reportmessages (server, name, message, timestamp, reportid) VALUES (?,?,?,?,?);")) {
+						st2.setString(1, server);
+						st2.setString(2, user);
+						st2.setString(3, rs.getString("message"));
+						st2.setLong(4, rs.getLong("timestamp"));
+						st2.setString(5, reportid);
+						st2.executeUpdate();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	public void delete(String server, Long timestamp) {

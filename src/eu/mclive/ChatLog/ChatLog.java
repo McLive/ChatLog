@@ -1,8 +1,12 @@
 package eu.mclive.ChatLog;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -82,13 +86,13 @@ public class ChatLog extends JavaPlugin implements Listener {
 	            String bypassPermission = getConfig().getString("bypass-with-permission");
 	            //System.out.println(server + p + msg + timestamp);
 	            if( bypassChar.isEmpty() || ( msg.startsWith(bypassChar) && !p.hasPermission(bypassPermission) ) || !msg.startsWith(bypassChar) ) {
-	            	ChatLog.INSTANCE.sqlHandler.addMessage(server, p, msg, timestamp);
+	            	sqlHandler.addMessage(server, p, msg, timestamp);
 	            }
 	    	}
 	    });
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, final String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + "Only Players can run this command!");
 			return true;
@@ -97,34 +101,42 @@ public class ChatLog extends JavaPlugin implements Listener {
 		final Player p = (Player) sender;
 
 		if (cmd.getName().equalsIgnoreCase("chatreport")) {
-			if (args.length == 0 || args.length > 1) {
+			if (args.length == 0) {
 				p.sendMessage("§7§m                                                                     ");
 				p.sendMessage(messages.help.replace("%cmd%", "/" + commandLabel));
 				p.sendMessage("§7§m                                                                     ");
-			} else if (args.length == 1) {
-				final String p2 = args[0];
-				Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+			}
+			if (args.length >= 1) {
+				final Date now = new Date();
+				final Long timestamp = new Long(now.getTime()/1000);
+	            final String server = getConfig().getString("server");
+	            boolean mode = getConfig().getBoolean("minigames-mode");
+	            if(mode == false) { //disabled minigame mode? Only get messages from last 15 minutes!
+	            	Calendar cal = Calendar.getInstance();
+	            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-15); //15 minutes before
+	            	pluginstart = cal.getTimeInMillis() / 1000L;
+	            }
+	            Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 					public void run() {
-			            Date now = new Date();
-			            Long timestamp = new Long(now.getTime()/1000);
-			            String server = getConfig().getString("server");
-			            boolean mode = getConfig().getBoolean("minigames-mode");
-			            if(mode == false) { //disabled minigame mode? Only get messages from last 15 minutes!
-			            	Calendar cal = Calendar.getInstance();
-			            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-15); //15 minutes before
-			            	pluginstart = cal.getTimeInMillis() / 1000L;
-			            }
-			            int messagesSent = sqlHandler.checkMessage(server, p2, pluginstart, timestamp);
-			            if(messagesSent >= 1) {
-			            	logger.info("[" + p.getName() + "] getting ChatLog from " + p2);
-			            	String reportid = UUID.randomUUID().toString().replace("-", "");
-			            	sqlHandler.setReport(server, p2, pluginstart, timestamp, reportid);
-			            	String URL = getConfig().getString("URL");
+						List<String> users = new ArrayList<String>();
+						for (int i = 0; i < args.length; i++) {
+							String user = args[i];
+							int messagesSent = sqlHandler.checkMessage(server, user, pluginstart, timestamp);
+							if(messagesSent >= 1 ) {
+								users.add(user);
+							} else {
+								p.sendMessage(messages.error.replace("%name%", user));
+							}
+						}
+						String reportid = UUID.randomUUID().toString().replace("-", "");
+						if(users != null && users.size() > 0) {
+							sqlHandler.setReport(server, users, pluginstart, timestamp, reportid);
+							String URL = getConfig().getString("URL");
 			            	p.sendMessage(messages.url.replace("%url%", URL + reportid));
-			            } else {
-			            	p.sendMessage(messages.error.replace("%name%", p2));
-			            }
-			    	}
+						} else {
+							p.sendMessage(messages.errorNotSaved);
+						}
+					}
 			    });
 			}
 		}
