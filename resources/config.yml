@@ -4,6 +4,9 @@
 # Set this to "true" if you want a chatreport to show every message from a user since the plugin has started.
 # If you set it to "false", a chatreport will only show messages from a user of the last 15 minutes
 # 
+# timeBack: <minutes>
+# When minigames-mode is set to "false", the plugin will look for messages from a player of the last <minutes> minutes.
+# 
 # server: Servername
 # Set the servername here. It will show up on the webpage.
 # 
@@ -24,6 +27,7 @@
 # Toggle between AsyncChatEvent and ChatEvent (usefull for tekkit etc...)
 # 
 minigames-mode: false
+timeBack: 15
 server: 'Servername'
 URL: http://freecraft.eu/chatlog/?report=
 bypass-with-beginning-char: '#'

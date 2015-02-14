@@ -113,9 +113,10 @@ public class ChatLog extends JavaPlugin implements Listener {
 				final Long timestamp = new Long(now.getTime()/1000);
 	            final String server = getConfig().getString("server");
 	            boolean mode = getConfig().getBoolean("minigames-mode");
+	            int timeBack = getConfig().getInt("timeBack");
 	            if(mode == false) { //disabled minigame mode? Only get messages from last 15 minutes!
 	            	Calendar cal = Calendar.getInstance();
-	            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-15); //15 minutes before
+	            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-timeBack); //15 minutes before
 	            	pluginstart = cal.getTimeInMillis() / 1000L;
 	            }
 	            Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
