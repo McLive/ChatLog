@@ -32,3 +32,4 @@ Cleanup:
   enabled: false
   since: 14
 use-AsyncChatEvent: true
+use-UUIDs: false

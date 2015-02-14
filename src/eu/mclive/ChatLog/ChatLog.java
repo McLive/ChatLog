@@ -24,6 +24,7 @@ import eu.mclive.ChatLog.MySQL.MySQLHandler;
 
 public class ChatLog extends JavaPlugin implements Listener {
 	
+	public UUIDHandler UUIDHandler;
 	public final Logger logger = getLogger();
 	public static MySQL sql;
 	public static Messages messages;
@@ -36,7 +37,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 		try {
 			logger.info("Loading MySQL ...");
 			sql = new MySQL(this);
-			sqlHandler = new MySQLHandler(sql);
+			sqlHandler = new MySQLHandler(sql, this);
 			startRefresh();
 			logger.info("MySQL successfully loaded.");
 		} catch (Exception e1) {
@@ -44,6 +45,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 		}
 		
 		messages = new Messages(this);
+		UUIDHandler = new UUIDHandler(this);
 		
 		getConfig().options().copyDefaults(true);
         saveConfig();

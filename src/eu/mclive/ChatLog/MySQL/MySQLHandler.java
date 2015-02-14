@@ -1,30 +1,52 @@
 package eu.mclive.ChatLog.MySQL;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import eu.mclive.ChatLog.ChatLog;
+import eu.mclive.ChatLog.UUIDHandler;
 
 public class MySQLHandler {
-	
+	private ChatLog plugin;
 	private MySQL sql;
 	
-	public MySQLHandler(MySQL mysql) {
+	public MySQLHandler(MySQL mysql, ChatLog plugin) {
 		sql = mysql;
-		sql.queryUpdate("CREATE TABLE IF NOT EXISTS messages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),PRIMARY KEY (id))");
-		sql.queryUpdate("CREATE TABLE IF NOT EXISTS reportmessages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),reportid text,PRIMARY KEY (id))");
+		sql.queryUpdate("CREATE TABLE IF NOT EXISTS test_messages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),PRIMARY KEY (id))");
+		sql.queryUpdate("CREATE TABLE IF NOT EXISTS test_reportmessages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),reportid text,PRIMARY KEY (id))");
+		this.plugin = plugin;
 	}
-	
+
 	public void addMessage(String server, Player p, String msg, Long timestamp) {
+		String name;
+		
+		if(plugin.getConfig().getBoolean("use-UUIDs")) {
+			UUID uuid = p.getUniqueId();
+			name = uuid.toString().replace("-", "");
+		} else {
+			name = p.getName();
+		}
+		
 		Connection conn = sql.getConnection();
-		try (PreparedStatement st = conn.prepareStatement("INSERT INTO messages (server, name, message, timestamp) VALUES (?,?,?,?);")) {
+		try (PreparedStatement st = conn.prepareStatement("INSERT INTO test_messages (server, name, message, timestamp) VALUES (?,?,?,?);")) {
 			st.setString(1, server);
-			st.setString(2, p.getName());
+			st.setString(2, name);
 			st.setString(3, msg);
 			st.setLong(4, timestamp);
 			st.executeUpdate();
@@ -34,11 +56,20 @@ public class MySQLHandler {
 		}
 	}
 	public int checkMessage(String server, String p2, Long pluginstart, Long timestamp) {
+		String name = null;
+		
+		if(plugin.getConfig().getBoolean("use-UUIDs")) {
+			//player could be offline
+			name = plugin.UUIDHandler.getUUID(p2);
+		} else {
+			name = p2;
+		}
+		
 		Connection conn = sql.getConnection();
 		ResultSet rs = null;
-		try (PreparedStatement st = conn.prepareStatement("SELECT COUNT(*) AS count FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
+		try (PreparedStatement st = conn.prepareStatement("SELECT COUNT(*) AS count FROM test_messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
 			st.setString(1, server);
-			st.setString(2, p2);
+			st.setString(2, name);
 			st.setLong(3, pluginstart);
 			st.setLong(4, timestamp);
 			rs = st.executeQuery();
@@ -56,14 +87,18 @@ public class MySQLHandler {
 		ResultSet rs = null;
 		ChatLog.INSTANCE.logger.info("ReportID: " + reportid);
 		for(String user: users) {
-			try (PreparedStatement st = conn.prepareStatement("SELECT * FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
+			if(plugin.getConfig().getBoolean("use-UUIDs")) {
+				//player could be offline
+				user = plugin.UUIDHandler.getUUID(user);
+			}
+			try (PreparedStatement st = conn.prepareStatement("SELECT * FROM test_messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
 				st.setString(1, server);
 				st.setString(2, user);
 				st.setLong(3, pluginstart);
 				st.setLong(4, timestamp);
 				rs = st.executeQuery();
 				while(rs.next()) {
-					try (PreparedStatement st2 = conn.prepareStatement("INSERT INTO reportmessages (server, name, message, timestamp, reportid) VALUES (?,?,?,?,?);")) {
+					try (PreparedStatement st2 = conn.prepareStatement("INSERT INTO test_reportmessages (server, name, message, timestamp, reportid) VALUES (?,?,?,?,?);")) {
 						st2.setString(1, server);
 						st2.setString(2, user);
 						st2.setString(3, rs.getString("message"));
@@ -83,7 +118,7 @@ public class MySQLHandler {
 	}
 	public void delete(String server, Long timestamp) {
 		Connection conn = sql.getConnection();
-		try (PreparedStatement st = conn.prepareStatement("DELETE FROM messages WHERE server = ? AND timestamp < ? ")) {
+		try (PreparedStatement st = conn.prepareStatement("DELETE FROM test_messages WHERE server = ? AND timestamp < ? ")) {
 			st.setString(1, server);
 			st.setLong(2, timestamp);
 			int rows = st.executeUpdate();
