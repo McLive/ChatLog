@@ -28,8 +28,8 @@ public class MySQLHandler {
 	
 	public MySQLHandler(MySQL mysql, ChatLog plugin) {
 		sql = mysql;
-		sql.queryUpdate("CREATE TABLE IF NOT EXISTS test_messages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),PRIMARY KEY (id))");
-		sql.queryUpdate("CREATE TABLE IF NOT EXISTS test_reportmessages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),reportid text,PRIMARY KEY (id))");
+		sql.queryUpdate("CREATE TABLE IF NOT EXISTS messages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),PRIMARY KEY (id))");
+		sql.queryUpdate("CREATE TABLE IF NOT EXISTS reportmessages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),reportid text,PRIMARY KEY (id))");
 		this.plugin = plugin;
 	}
 
@@ -44,7 +44,7 @@ public class MySQLHandler {
 		}
 		
 		Connection conn = sql.getConnection();
-		try (PreparedStatement st = conn.prepareStatement("INSERT INTO test_messages (server, name, message, timestamp) VALUES (?,?,?,?);")) {
+		try (PreparedStatement st = conn.prepareStatement("INSERT INTO messages (server, name, message, timestamp) VALUES (?,?,?,?);")) {
 			st.setString(1, server);
 			st.setString(2, name);
 			st.setString(3, msg);
@@ -67,7 +67,7 @@ public class MySQLHandler {
 		
 		Connection conn = sql.getConnection();
 		ResultSet rs = null;
-		try (PreparedStatement st = conn.prepareStatement("SELECT COUNT(*) AS count FROM test_messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
+		try (PreparedStatement st = conn.prepareStatement("SELECT COUNT(*) AS count FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
 			st.setString(1, server);
 			st.setString(2, name);
 			st.setLong(3, pluginstart);
@@ -91,14 +91,14 @@ public class MySQLHandler {
 				//player could be offline
 				user = plugin.UUIDHandler.getUUID(user);
 			}
-			try (PreparedStatement st = conn.prepareStatement("SELECT * FROM test_messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
+			try (PreparedStatement st = conn.prepareStatement("SELECT * FROM messages WHERE server = ? && name = ? && timestamp >= ? && timestamp <= ?;")) {
 				st.setString(1, server);
 				st.setString(2, user);
 				st.setLong(3, pluginstart);
 				st.setLong(4, timestamp);
 				rs = st.executeQuery();
 				while(rs.next()) {
-					try (PreparedStatement st2 = conn.prepareStatement("INSERT INTO test_reportmessages (server, name, message, timestamp, reportid) VALUES (?,?,?,?,?);")) {
+					try (PreparedStatement st2 = conn.prepareStatement("INSERT INTO reportmessages (server, name, message, timestamp, reportid) VALUES (?,?,?,?,?);")) {
 						st2.setString(1, server);
 						st2.setString(2, user);
 						st2.setString(3, rs.getString("message"));
@@ -118,7 +118,7 @@ public class MySQLHandler {
 	}
 	public void delete(String server, Long timestamp) {
 		Connection conn = sql.getConnection();
-		try (PreparedStatement st = conn.prepareStatement("DELETE FROM test_messages WHERE server = ? AND timestamp < ? ")) {
+		try (PreparedStatement st = conn.prepareStatement("DELETE FROM messages WHERE server = ? AND timestamp < ? ")) {
 			st.setString(1, server);
 			st.setLong(2, timestamp);
 			int rows = st.executeUpdate();
