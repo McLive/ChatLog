@@ -28,8 +28,8 @@ public class MySQLHandler {
 	
 	public MySQLHandler(MySQL mysql, ChatLog plugin) {
 		sql = mysql;
-		sql.queryUpdate("CREATE TABLE IF NOT EXISTS messages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),PRIMARY KEY (id))");
-		sql.queryUpdate("CREATE TABLE IF NOT EXISTS reportmessages (id int NOT NULL AUTO_INCREMENT,server varchar(100),name varchar(100),message varchar(400),timestamp varchar(50),reportid text,PRIMARY KEY (id))");
+		sql.queryUpdate("CREATE TABLE IF NOT EXISTS messages (id int NOT NULL AUTO_INCREMENT, server varchar(100), name varchar(100), message varchar(400), timestamp varchar(50), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci");
+		sql.queryUpdate("CREATE TABLE IF NOT EXISTS reportmessages (id int NOT NULL AUTO_INCREMENT, server varchar(100), name varchar(100), message varchar(400), timestamp varchar(50), reportid text, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci");
 		this.plugin = plugin;
 	}
 
