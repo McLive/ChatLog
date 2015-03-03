@@ -26,6 +26,9 @@
 # use-AsyncChatEvent
 # Toggle between AsyncChatEvent and ChatEvent (usefull for tekkit etc...)
 # 
+# metrics:
+# Disable or enable metrics. 
+# 
 minigames-mode: false
 timeBack: 15
 server: 'Servername'
@@ -37,3 +40,4 @@ Cleanup:
   since: 14
 use-AsyncChatEvent: true
 use-UUIDs: false
+metrics: true

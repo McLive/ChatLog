@@ -59,14 +59,18 @@ public class ChatLog extends JavaPlugin implements Listener {
 		
         Date now = new Date();
         pluginstart = new Long(now.getTime()/1000L);
+        
+        boolean metrics = getConfig().getBoolean("metrics");
 		
-        logger.info("Loading Metrics ...");
-        try {
-            Metrics metrics = new Metrics(this);
-            metrics.start();
-            logger.info("Metrics successfully loaded.");
-        } catch (IOException e) {
-            logger.warning("Failled to load Metrics.");
+        if(metrics) {
+	        logger.info("Loading Metrics ...");
+	        try {
+	            Metrics me = new Metrics(this);
+	            me.start();
+	            logger.info("Metrics successfully loaded.");
+	        } catch (IOException e) {
+	            logger.warning("Failled to load Metrics.");
+	        }
         }
         
         cleanup();
