@@ -3,6 +3,7 @@ package eu.mclive.ChatLog.Commands;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,8 @@ public class Chatreport implements CommandExecutor {
 		this.plugin = plugin;
 	}
 	
+	private HashMap<String, Long> lastReport = new HashMap<String, Long>();
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, final String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + "Only Players can run this command!");
@@ -29,8 +32,20 @@ public class Chatreport implements CommandExecutor {
 		}
 
 		final Player p = (Player) sender;
+		final String player = p.getName();
 
 		if (cmd.getName().equalsIgnoreCase("chatreport")) {
+			Long last = this.lastReport.get(player);
+			Long cooldown = plugin.getConfig().getLong("reportCooldown") * 1000;
+			if(last != null && cooldown > 0) {
+				Long now = System.currentTimeMillis();
+				Long until = last + cooldown;
+				if(System.currentTimeMillis() <= until) {
+					Long left = (until - now) / 1000;
+					p.sendMessage(plugin.messages.cooldown.replace("%seconds%", left.toString()));
+					return true;
+				}
+			}
 			if (args.length == 0) {
 				p.sendMessage("§7§m                                                                     ");
 				p.sendMessage(plugin.messages.help.replace("%cmd%", "/" + commandLabel));
@@ -64,6 +79,7 @@ public class Chatreport implements CommandExecutor {
 							plugin.sqlHandler.setReport(server, users, plugin.pluginstart, timestamp, reportid);
 							String URL = plugin.getConfig().getString("URL");
 			            	p.sendMessage(plugin.messages.url.replace("%url%", URL + reportid));
+			            	lastReport.put(player, System.currentTimeMillis());
 						} else {
 							p.sendMessage(plugin.messages.errorNotSaved);
 						}

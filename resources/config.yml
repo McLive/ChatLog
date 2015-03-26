@@ -7,6 +7,10 @@
 # timeBack: <minutes>
 # When minigames-mode is set to "false", the plugin will look for messages from a player of the last <minutes> minutes.
 # 
+# reportCooldown: <seconds>
+# Cooldown between /chatreport uses
+# 0 to disable
+# 
 # server: Servername
 # Set the servername here. It will show up on the webpage.
 # 
@@ -31,6 +35,7 @@
 # 
 minigames-mode: false
 timeBack: 15
+reportCooldown: 60
 server: 'Servername'
 URL: http://freecraft.eu/chatlog/?report=
 bypass-with-beginning-char: '#'
