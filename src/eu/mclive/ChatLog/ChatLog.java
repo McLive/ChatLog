@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
+import eu.mclive.ChatLog.Commands.Chatreport;
 import eu.mclive.ChatLog.MySQL.MySQL;
 import eu.mclive.ChatLog.MySQL.MySQLHandler;
 
@@ -30,7 +31,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	public static Messages messages;
 	public MySQLHandler sqlHandler;
 	public static ChatLog INSTANCE;
-	Long pluginstart = null;
+	public Long pluginstart = null;
 	
 	public void onEnable() {
 		ChatLog.INSTANCE = this;
@@ -75,13 +76,19 @@ public class ChatLog extends JavaPlugin implements Listener {
         
         cleanup();
         
+        this.registerCommands();
+        
 		logger.info("Plugin successfully started.");
 	}
 	
 	public void onDisable() {
 		logger.info("Plugin successfully stopped.");
 	}
-		
+	
+	public void registerCommands() {
+		getCommand("chatreport").setExecutor(new Chatreport(this));
+	}
+	
 	public void addMessage(final Player p, final String msg) {
 	    Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 	    	public void run() {
@@ -98,57 +105,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	    });
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, final String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Only Players can run this command!");
-			return true;
-		}
-
-		final Player p = (Player) sender;
-
-		if (cmd.getName().equalsIgnoreCase("chatreport")) {
-			if (args.length == 0) {
-				p.sendMessage("§7§m                                                                     ");
-				p.sendMessage(messages.help.replace("%cmd%", "/" + commandLabel));
-				p.sendMessage("§7§m                                                                     ");
-			}
-			if (args.length >= 1) {
-				final Date now = new Date();
-				final Long timestamp = new Long(now.getTime()/1000);
-	            final String server = getConfig().getString("server");
-	            boolean mode = getConfig().getBoolean("minigames-mode");
-	            int timeBack = getConfig().getInt("timeBack");
-	            if(mode == false) { //disabled minigame mode? Only get messages from last 15 minutes!
-	            	Calendar cal = Calendar.getInstance();
-	            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-timeBack); //15 minutes before
-	            	pluginstart = cal.getTimeInMillis() / 1000L;
-	            }
-	            Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-					public void run() {
-						List<String> users = new ArrayList<String>();
-						for (int i = 0; i < args.length; i++) {
-							String user = args[i];
-							int messagesSent = sqlHandler.checkMessage(server, user, pluginstart, timestamp);
-							if(messagesSent >= 1 ) {
-								users.add(user);
-							} else {
-								p.sendMessage(messages.error.replace("%name%", user));
-							}
-						}
-						String reportid = UUID.randomUUID().toString().replace("-", "");
-						if(users != null && users.size() > 0) {
-							sqlHandler.setReport(server, users, pluginstart, timestamp, reportid);
-							String URL = getConfig().getString("URL");
-			            	p.sendMessage(messages.url.replace("%url%", URL + reportid));
-						} else {
-							p.sendMessage(messages.errorNotSaved);
-						}
-					}
-			    });
-			}
-		}
-		return false;
-	}
+	
 	public void cleanup() {
 		final String server = getConfig().getString("server");
 		boolean doCleanup = getConfig().getBoolean("Cleanup.enabled");
