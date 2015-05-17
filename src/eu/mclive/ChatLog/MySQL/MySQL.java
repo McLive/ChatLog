@@ -63,8 +63,35 @@ public class MySQL {
 		conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
 	}
 	
-	public Connection getConnection(){
-		return conn;
+	public Connection getConnection() {
+		try {
+			if(!conn.isValid(1)) {
+				System.out.println("[ChatLog] Lost MySQL-Connection! Reconnecting...");
+				try {
+					conn = this.openConnection();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	try(PreparedStatement stmt = this.conn.prepareStatement("SELECT 1")) {
+			stmt.executeQuery();
+		} catch (SQLException e) {
+			System.out.println("[ChatLog] SELECT 1 - failled. Reconnecting...");
+			try {
+				conn = this.openConnection();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+    		
+    	return conn;
 	}
 	
 	public boolean hasConnecion(){
