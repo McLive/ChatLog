@@ -25,8 +25,8 @@ public class MySQL {
 	
 	private Connection conn;
 	
-	public MySQL(ChatLog cl) throws Exception{
-		plugin = cl;
+	public MySQL(ChatLog plugin) throws Exception {
+		this.plugin = plugin;
 		File file = new File(plugin.getDataFolder(), "mysql.yml");
 		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 		
@@ -53,9 +53,9 @@ public class MySQL {
 	}
 	
 	public Connection openConnection() throws Exception {
-			Class.forName("com.mysql.jdbc.Driver");
-			Connection conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
-			return conn;
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
+		return conn;
 	}
 	
 	public void refreshConnect() throws Exception {
@@ -70,12 +70,10 @@ public class MySQL {
 				try {
 					conn = this.openConnection();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	
@@ -86,44 +84,38 @@ public class MySQL {
 			try {
 				conn = this.openConnection();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
-    		
     	return conn;
 	}
 	
-	public boolean hasConnecion(){
+	public boolean hasConnecion() {
 		try {
 			return conn != null || conn.isValid(1);
 		} catch (SQLException e) {
 			return false;
 		}
 	}
-	
-	public void queryUpdate(String query){
+
+	public void queryUpdate(String query) {
 		Connection connection = conn;
-		PreparedStatement st = null;
-		try {
-			st = connection.prepareStatement(query);
+		try (PreparedStatement st = connection.prepareStatement(query)) {
 			st.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			this.closeRessources(null, st);
 		}
 	}
 	
-	public void closeRessources(ResultSet rs, PreparedStatement st){
-		if(rs !=null){
+	public void closeRessources(ResultSet rs, PreparedStatement st) {
+		if(rs != null){
 			try {
 				rs.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		if(st != null){
+		if(st != null) {
 			try {
 				st.close();
 			} catch (SQLException e) {
@@ -132,7 +124,7 @@ public class MySQL {
 		}
 	}
 	
-	public void closeConnection(){
+	public void closeConnection() {
 		try {
 			conn.close();
 		} catch (SQLException e) {

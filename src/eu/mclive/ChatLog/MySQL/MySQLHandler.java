@@ -1,10 +1,5 @@
 package eu.mclive.ChatLog.MySQL;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,15 +7,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import eu.mclive.ChatLog.ChatLog;
-import eu.mclive.ChatLog.UUIDHandler;
 
 public class MySQLHandler {
 	private ChatLog plugin;
@@ -51,7 +40,6 @@ public class MySQLHandler {
 			st.setLong(4, timestamp);
 			st.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -77,7 +65,6 @@ public class MySQLHandler {
 			//System.out.println("Von " + p2 + " gesendete Nachrichten seit Pluginstart: " + rs.getInt("count") );
 			return rs.getInt("count");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -85,8 +72,8 @@ public class MySQLHandler {
 	public void setReport(String server, List<String> users, Long pluginstart, Long timestamp, String reportid) {
 		Connection conn = sql.getConnection();
 		ResultSet rs = null;
-		ChatLog.INSTANCE.logger.info("ReportID: " + reportid);
-		for(String user: users) {
+		plugin.logger.info("ReportID: " + reportid);
+		for(String user : users) {
 			if(plugin.getConfig().getBoolean("use-UUIDs")) {
 				//player could be offline
 				user = plugin.UUIDHandler.getUUID(user);
@@ -106,12 +93,10 @@ public class MySQLHandler {
 						st2.setString(5, reportid);
 						st2.executeUpdate();
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -123,12 +108,11 @@ public class MySQLHandler {
 			st.setLong(2, timestamp);
 			int rows = st.executeUpdate();
 			if(rows > 0) {
-				ChatLog.INSTANCE.logger.info("Deleted " + rows + " old messages!");
+				plugin.logger.info("Deleted " + rows + " old messages!");
 			} else {
-				ChatLog.INSTANCE.logger.info("There were no old messages to delete.");
+				plugin.logger.info("There were no old messages to delete.");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
