@@ -19,12 +19,11 @@ public class Messages {
 	public String url;
 	public String errorNotSaved;
 	public String cooldown;
-	
-	public Messages(ChatLog cl) {
-		this.plugin = cl;
-		
-		File file = new File(plugin.getDataFolder(), "messages.yml");
-		FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+	File file = new File(plugin.getDataFolder(), "messages.yml");
+	FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+
+	public Messages(ChatLog plugin) {
+		this.plugin = plugin;
 
 		cfg.addDefault("help", "&e%cmd% <playername> &7- &agets the Chatlog from a player.");
 		cfg.addDefault("error", "&cNo messages found from %name%");
@@ -50,6 +49,10 @@ public class Messages {
 	private String addcolors(String msg) {
 		msg = ChatColor.translateAlternateColorCodes('&', msg);
 		return msg;
+	}
+
+	public String help() {
+		return addcolors(cfg.getString("help"));
 	}
 
 }

@@ -1,19 +1,11 @@
 package eu.mclive.ChatLog;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,15 +18,13 @@ import eu.mclive.ChatLog.MySQL.MySQLHandler;
 public class ChatLog extends JavaPlugin implements Listener {
 	
 	public UUIDHandler UUIDHandler;
-	public final Logger logger = getLogger();
-	public static MySQL sql;
-	public static Messages messages;
+	public Logger logger = getLogger();
+	public MySQL sql;
+	public Messages messages;
 	public MySQLHandler sqlHandler;
-	public static ChatLog INSTANCE;
 	public Long pluginstart = null;
 	
 	public void onEnable() {
-		ChatLog.INSTANCE = this;
 		try {
 			logger.info("Loading MySQL ...");
 			sql = new MySQL(this);
@@ -59,7 +49,7 @@ public class ChatLog extends JavaPlugin implements Listener {
         }
 		
         Date now = new Date();
-        pluginstart = new Long(now.getTime()/1000L);
+        pluginstart = now.getTime() / 1000L;
         
         boolean metrics = getConfig().getBoolean("metrics");
 		
@@ -93,7 +83,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	    Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
 	    	public void run() {
 	            Date now = new Date();
-	            Long timestamp = new Long(now.getTime()/1000);
+	            Long timestamp = now.getTime() / 1000;
 	            String server = getConfig().getString("server");
 	            String bypassChar = getConfig().getString("bypass-with-beginning-char");
 	            String bypassPermission = getConfig().getString("bypass-with-permission");
@@ -104,8 +94,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	    	}
 	    });
 	}
-	
-	
+
 	public void cleanup() {
 		final String server = getConfig().getString("server");
 		boolean doCleanup = getConfig().getBoolean("Cleanup.enabled");
@@ -137,7 +126,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 				try {
 					sql.refreshConnect();
 				} catch (Exception e) {
-					logger.warning("Failled to reload MySQL: " + e.toString());
+					logger.warning("Failed to reload MySQL: " + e.toString());
 				}
 			}
 		}, 20L*10, 20L * 1800);

@@ -23,7 +23,7 @@ public class Chatreport implements CommandExecutor {
 		this.plugin = plugin;
 	}
 	
-	private HashMap<String, Long> lastReport = new HashMap<String, Long>();
+	private HashMap<String, Long> lastReport = new HashMap<>();
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, final String[] args) {
 		if (!(sender instanceof Player)) {
@@ -53,18 +53,18 @@ public class Chatreport implements CommandExecutor {
 			}
 			if (args.length >= 1) {
 				final Date now = new Date();
-				final Long timestamp = new Long(now.getTime()/1000);
+				final Long timestamp = now.getTime() / 1000;
 	            final String server = plugin.getConfig().getString("server");
 	            boolean mode = plugin.getConfig().getBoolean("minigames-mode");
 	            int timeBack = plugin.getConfig().getInt("timeBack");
-	            if(mode == false) { //disabled minigame mode? Only get messages from last 15 minutes!
+	            if(!mode) { //disabled minigame mode? Only get messages from last 15 minutes!
 	            	Calendar cal = Calendar.getInstance();
 	            	cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE)-timeBack); //15 minutes before
 	            	plugin.pluginstart = cal.getTimeInMillis() / 1000L;
 	            }
 	            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 					public void run() {
-						List<String> users = new ArrayList<String>();
+						List<String> users = new ArrayList<>();
 						for (int i = 0; i < args.length; i++) {
 							String user = args[i];
 							int messagesSent = plugin.sqlHandler.checkMessage(server, user, plugin.pluginstart, timestamp);
