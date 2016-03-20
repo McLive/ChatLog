@@ -25,14 +25,8 @@ public class Chatreport implements CommandExecutor {
 	
 	private HashMap<String, Long> lastReport = new HashMap<>();
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, final String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Only Players can run this command!");
-			return true;
-		}
-
-		final Player p = (Player) sender;
-		final String player = p.getName();
+	public boolean onCommand(final CommandSender sender, Command cmd, String commandLabel, final String[] args) {
+		final String player = sender.getName();
 
 		if (cmd.getName().equalsIgnoreCase("chatreport")) {
 			Long last = this.lastReport.get(player);
@@ -42,14 +36,14 @@ public class Chatreport implements CommandExecutor {
 				Long until = last + cooldown;
 				if(System.currentTimeMillis() <= until) {
 					Long left = (until - now) / 1000;
-					p.sendMessage(plugin.messages.cooldown.replace("%seconds%", left.toString()));
+					sender.sendMessage(plugin.messages.cooldown.replace("%seconds%", left.toString()));
 					return true;
 				}
 			}
 			if (args.length == 0) {
-				p.sendMessage("§7§m                                                                     ");
-				p.sendMessage(plugin.messages.help.replace("%cmd%", "/" + commandLabel));
-				p.sendMessage("§7§m                                                                     ");
+				sender.sendMessage("§7§m                                                                     ");
+				sender.sendMessage(plugin.messages.help.replace("%cmd%", "/" + commandLabel));
+				sender.sendMessage("§7§m                                                                     ");
 			}
 			if (args.length >= 1) {
 				final Date now = new Date();
@@ -71,17 +65,17 @@ public class Chatreport implements CommandExecutor {
 							if(messagesSent >= 1 ) {
 								users.add(user);
 							} else {
-								p.sendMessage(plugin.messages.error.replace("%name%", user));
+								sender.sendMessage(plugin.messages.error.replace("%name%", user));
 							}
 						}
 						String reportid = UUID.randomUUID().toString().replace("-", "");
 						if(users != null && users.size() > 0) {
 							plugin.sqlHandler.setReport(server, users, plugin.pluginstart, timestamp, reportid);
 							String URL = plugin.getConfig().getString("URL");
-			            	p.sendMessage(plugin.messages.url.replace("%url%", URL + reportid));
+							sender.sendMessage(plugin.messages.url.replace("%url%", URL + reportid));
 			            	lastReport.put(player, System.currentTimeMillis());
 						} else {
-							p.sendMessage(plugin.messages.errorNotSaved);
+							sender.sendMessage(plugin.messages.errorNotSaved);
 						}
 					}
 			    });
