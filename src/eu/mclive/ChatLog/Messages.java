@@ -19,11 +19,13 @@ public class Messages {
 	public String url;
 	public String errorNotSaved;
 	public String cooldown;
-	File file = new File(plugin.getDataFolder(), "messages.yml");
-	FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+	private File file;
+	private FileConfiguration cfg;
 
 	public Messages(ChatLog plugin) {
 		this.plugin = plugin;
+		this.file = new File(plugin.getDataFolder(), "messages.yml");
+		this.cfg = YamlConfiguration.loadConfiguration(file);
 
 		cfg.addDefault("help", "&e%cmd% <playername> &7- &agets the Chatlog from a player.");
 		cfg.addDefault("error", "&cNo messages found from %name%");
