@@ -58,6 +58,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	        try {
 	            Metrics me = new Metrics(this);
 	            me.start();
+				eu.mclive.ChatLog.bstats.Metrics bstats = new eu.mclive.ChatLog.bstats.Metrics(this);
 	            logger.info("Metrics successfully loaded.");
 	        } catch (IOException e) {
 	            logger.warning("Failled to load Metrics.");
