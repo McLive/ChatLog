@@ -23,6 +23,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	public Messages messages;
 	public MySQLHandler sqlHandler;
 	public Long pluginstart = null;
+	private eu.mclive.ChatLog.bstats.Metrics bstats;
 	
 	public void onEnable() {
 		try {
@@ -58,7 +59,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	        try {
 	            Metrics me = new Metrics(this);
 	            me.start();
-				eu.mclive.ChatLog.bstats.Metrics bstats = new eu.mclive.ChatLog.bstats.Metrics(this);
+				bstats = new eu.mclive.ChatLog.bstats.Metrics(this);
 	            logger.info("Metrics successfully loaded.");
 	        } catch (IOException e) {
 	            logger.warning("Failled to load Metrics.");
@@ -73,6 +74,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 	}
 	
 	public void onDisable() {
+		bstats.getTimer().cancel();
 		logger.info("Plugin successfully stopped.");
 	}
 	

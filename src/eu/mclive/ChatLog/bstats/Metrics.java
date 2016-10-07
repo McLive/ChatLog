@@ -1,5 +1,6 @@
 package eu.mclive.ChatLog.bstats;
 
+import eu.mclive.ChatLog.ChatLog;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
@@ -8,10 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
@@ -117,19 +115,37 @@ public class Metrics {
         charts.add(chart);
     }
 
+    private Timer timer;
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    private void setTimer(Timer timer) {
+        this.timer = timer;
+    }
+
     /**
      * Starts the Scheduler which submits our data every 30 minutes.
      */
     private void startSubmitting() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+        /*Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
                 submitData();
             }
-        }, 20 * 60 * 5, 20 * 60 * 30);
+        }, 20 * 60 * 5, 20 * 60 * 30);*/
         // Submit the data every 30 minutes, first time after 5 minutes to give other plugins enough time to start
         // WARNING: Changing the frequency has no effect but your plugin WILL be blocked/deleted!
         // WARNING: Just don't do it!
+        this.setTimer(new Timer());
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                submitData();
+            }
+        };
+        this.getTimer().schedule(task, 0, 1000 * 60 * 30);
     }
 
     /**
@@ -220,13 +236,17 @@ public class Metrics {
         data.put("plugins", pluginData);
 
         try {
+            plugin.getLogger().log(Level.INFO, "Submitting plugin stats of " + plugin.getName());
             // Send the data
-            sendData(data);
+            sendData(data, plugin);
+            plugin.getLogger().log(Level.INFO, "Submitted plugin stats of " + plugin.getName() + " without errors.");
         } catch (Exception e) {
             // Something went wrong! :(
             if (logFailedRequests) {
                 plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
             }
+            plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
+            plugin.getLogger().log(Level.WARNING, e.getMessage());
         }
     }
 
@@ -236,7 +256,7 @@ public class Metrics {
      * @param data The data to send.
      * @throws Exception If the request failed.
      */
-    private static void sendData(JSONObject data) throws Exception {
+    private static void sendData(JSONObject data, JavaPlugin plugin) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data cannot be null!");
         }
@@ -261,7 +281,17 @@ public class Metrics {
         outputStream.flush();
         outputStream.close();
 
-        connection.getInputStream().close(); // We don't care about the response - Just send our data :)
+        // connection.getInputStream().close(); // We don't care about the response - Just send our data :)
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        String content = "";
+        while ((inputLine = in.readLine()) != null) {
+            content = content + inputLine;
+        }
+        in.close();
+
+        plugin.getLogger().log(Level.INFO, "Response from " + URL + ": " + content);
     }
 
     /**
