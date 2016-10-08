@@ -8,53 +8,53 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Messages {
-	
-	private ChatLog plugin;
-	public String help;
-	public String cmd_color;
-	public String playername;
-	public String seperator;
-	public String help2;
-	public String error;
-	public String url;
-	public String errorNotSaved;
-	public String cooldown;
-	private File file;
-	private FileConfiguration cfg;
 
-	public Messages(ChatLog plugin) {
-		this.plugin = plugin;
-		this.file = new File(plugin.getDataFolder(), "messages.yml");
-		this.cfg = YamlConfiguration.loadConfiguration(file);
+    private ChatLog plugin;
+    public String help;
+    public String cmd_color;
+    public String playername;
+    public String seperator;
+    public String help2;
+    public String error;
+    public String url;
+    public String errorNotSaved;
+    public String cooldown;
+    private File file;
+    private FileConfiguration cfg;
 
-		cfg.addDefault("help", "&e%cmd% <playername> &7- &agets the Chatlog from a player.");
-		cfg.addDefault("error", "&cNo messages found from %name%");
-		cfg.addDefault("url", "&eURL: &a%url%");
-		cfg.addDefault("errorNotSaved", "&cNo report saved");
-		cfg.addDefault("cooldown", "§cYou have to wait %seconds% seconds.");
+    public Messages(ChatLog plugin) {
+        this.plugin = plugin;
+        this.file = new File(plugin.getDataFolder(), "messages.yml");
+        this.cfg = YamlConfiguration.loadConfiguration(file);
 
-		cfg.options().copyDefaults(true);
-		try {
-			cfg.save(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        cfg.addDefault("help", "&e%cmd% <playername> &7- &agets the Chatlog from a player.");
+        cfg.addDefault("error", "&cNo messages found from %name%");
+        cfg.addDefault("url", "&eURL: &a%url%");
+        cfg.addDefault("errorNotSaved", "&cNo report saved");
+        cfg.addDefault("cooldown", "§cYou have to wait %seconds% seconds.");
 
-		help = addcolors(cfg.getString("help"));
-		error = addcolors(cfg.getString("error"));
-		url = addcolors(cfg.getString("url"));
-		errorNotSaved = addcolors(cfg.getString("errorNotSaved"));
-		cooldown = addcolors(cfg.getString("cooldown"));
-		
-	}
-	
-	private String addcolors(String msg) {
-		msg = ChatColor.translateAlternateColorCodes('&', msg);
-		return msg;
-	}
+        cfg.options().copyDefaults(true);
+        try {
+            cfg.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	public String help() {
-		return addcolors(cfg.getString("help"));
-	}
+        help = addcolors(cfg.getString("help"));
+        error = addcolors(cfg.getString("error"));
+        url = addcolors(cfg.getString("url"));
+        errorNotSaved = addcolors(cfg.getString("errorNotSaved"));
+        cooldown = addcolors(cfg.getString("cooldown"));
+
+    }
+
+    private String addcolors(String msg) {
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
+        return msg;
+    }
+
+    public String help() {
+        return addcolors(cfg.getString("help"));
+    }
 
 }

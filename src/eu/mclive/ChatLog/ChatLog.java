@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import eu.mclive.ChatLog.bstats.Metrics_McLive;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -25,6 +24,7 @@ public class ChatLog extends JavaPlugin implements Listener {
     public MySQLHandler sqlHandler;
     public Long pluginstart = null;
     private eu.mclive.ChatLog.bstats.Metrics bstats;
+    private Utils utils;
 
     /**
      * Issued ChatLogs since last submit.
@@ -49,16 +49,9 @@ public class ChatLog extends JavaPlugin implements Listener {
 
         messages = new Messages(this);
         UUIDHandler = new UUIDHandler(this);
+        utils = new Utils(this);
 
-        getConfig().options().copyDefaults(true);
-        saveConfig();
-
-        if (getConfig().getBoolean("use-AsyncChatEvent")) {
-            getServer().getPluginManager().registerEvents(new AsyncChatListener(this), this);
-        } else {
-            logger.info("Using NON-Async ChatEvent.");
-            getServer().getPluginManager().registerEvents(new ChatListener(this), this);
-        }
+        this.setupConfig();
 
         Date now = new Date();
         pluginstart = now.getTime() / 1000L;
@@ -77,20 +70,34 @@ public class ChatLog extends JavaPlugin implements Listener {
             }
         }
 
-        cleanup();
+        this.cleanup();
 
+        this.registerEvents();
         this.registerCommands();
 
         logger.info("Plugin successfully started.");
     }
 
     public void onDisable() {
-        //bstats.getTimer().cancel();
         logger.info("Plugin successfully stopped.");
+    }
+
+    private void setupConfig() {
+        getConfig().options().copyDefaults(true);
+        saveConfig();
     }
 
     private void registerCommands() {
         getCommand("chatreport").setExecutor(new Chatreport(this));
+    }
+
+    private void registerEvents() {
+        if (getConfig().getBoolean("use-AsyncChatEvent")) {
+            getServer().getPluginManager().registerEvents(new AsyncChatListener(this), this);
+        } else {
+            logger.info("Using NON-Async ChatEvent.");
+            getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+        }
     }
 
     private void startBstats(eu.mclive.ChatLog.bstats.Metrics bstats) {
@@ -172,5 +179,13 @@ public class ChatLog extends JavaPlugin implements Listener {
                 }
             }
         }, 20L * 10, 20L * 1800);
+    }
+
+    public Utils getUtils() {
+        return utils;
+    }
+
+    public void setUtils(Utils utils) {
+        this.utils = utils;
     }
 }
