@@ -24,6 +24,7 @@ public class AsyncChatListener implements Listener {
 		final Player p = e.getPlayer();
 		final String msg = e.getMessage();
 		plugin.addMessage(p, ChatColor.stripColor(msg));
+		plugin.incrementLoggedMessages();
 	}
 	
 }

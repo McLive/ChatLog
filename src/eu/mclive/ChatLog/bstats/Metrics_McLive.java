@@ -18,9 +18,9 @@ import java.util.zip.GZIPOutputStream;
 /**
  * bStats collects some data for plugin authors.
  * <p>
- * Check out https://bStats.org/ to learn more about bStats!
+ * Check out http://bStats.org/ to learn more about bStats!
  */
-public class Metrics {
+public class Metrics_McLive {
 
     // The version of this bStats class
     public static final int B_STATS_VERSION = 1;
@@ -45,7 +45,7 @@ public class Metrics {
      *
      * @param plugin The plugin which stats should be submitted.
      */
-    public Metrics(JavaPlugin plugin) {
+    public Metrics_McLive(JavaPlugin plugin) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
@@ -71,7 +71,7 @@ public class Metrics {
                     "bStats collects some data for plugin authors like how many servers are using their plugins.\n" +
                             "To honor their work, you should not disable it.\n" +
                             "This has nearly no effect on the server performance!\n" +
-                            "Check out https://bStats.org/ to learn more :)"
+                            "Check out http://bStats.org/ to learn more :)"
             ).copyDefaults(true);
             try {
                 config.save(configFile);
@@ -94,7 +94,7 @@ public class Metrics {
                 }
             }
             // Register our service
-            Bukkit.getServicesManager().register(Metrics.class, this, plugin, ServicePriority.Normal);
+            Bukkit.getServicesManager().register(Metrics_McLive.class, this, plugin, ServicePriority.Normal);
             if (!found) {
                 // We are the first!
                 startSubmitting();
@@ -114,31 +114,37 @@ public class Metrics {
         charts.add(chart);
     }
 
+    private Timer timer;
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    private void setTimer(Timer timer) {
+        this.timer = timer;
+    }
+
     /**
      * Starts the Scheduler which submits our data every 30 minutes.
      */
     private void startSubmitting() {
-        final Timer timer = new Timer(true); // We use a timer cause the Bukkit scheduler is affected by server lags
-        timer.scheduleAtFixedRate(new TimerTask() {
+        /*Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                if (!plugin.isEnabled()) { // Plugin was disabled
-                    timer.cancel();
-                    return;
-                }
-                // Nevertheless we want our code to run in the Bukkit main thread, so we have to use the Bukkit scheduler
-                // Don't be afraid! The connection to the bStats server is still async, only the stats collection is sync ;)
-                Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        submitData();
-                    }
-                });
+                submitData();
             }
-        }, 1000 * 60 * 5, 1000 * 60 * 30);
+        }, 20 * 60 * 5, 20 * 60 * 30);*/
         // Submit the data every 30 minutes, first time after 5 minutes to give other plugins enough time to start
         // WARNING: Changing the frequency has no effect but your plugin WILL be blocked/deleted!
         // WARNING: Just don't do it!
+        this.setTimer(new Timer());
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                submitData();
+            }
+        };
+        this.getTimer().schedule(task, 0, 1000 * 60 * 30);
     }
 
     /**
@@ -209,7 +215,7 @@ public class Metrics {
      * Collects the data and sends it afterwards.
      */
     private void submitData() {
-        final JSONObject data = getServerData();
+        JSONObject data = getServerData();
 
         JSONArray pluginData = new JSONArray();
         // Search for all other bStats Metrics classes to get their plugin data
@@ -228,22 +234,19 @@ public class Metrics {
 
         data.put("plugins", pluginData);
 
-        // Create a new thread for the connection to the bStats server
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Send the data
-                    sendData(data, plugin);
-                } catch (Exception e) {
-                    // Something went wrong! :(
-                    if (logFailedRequests) {
-                        plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
-                    }
-                }
+        try {
+            plugin.getLogger().log(Level.INFO, "Submitting plugin stats of " + plugin.getName());
+            // Send the data
+            sendData(data, plugin);
+            plugin.getLogger().log(Level.INFO, "Submitted plugin stats of " + plugin.getName() + " without errors.");
+        } catch (Exception e) {
+            // Something went wrong! :(
+            if (logFailedRequests) {
+                plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
             }
-        }).start();
-
+            plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
+            plugin.getLogger().log(Level.WARNING, e.getMessage());
+        }
     }
 
     /**
@@ -255,9 +258,6 @@ public class Metrics {
     private static void sendData(JSONObject data, JavaPlugin plugin) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data cannot be null!");
-        }
-        if (Bukkit.isPrimaryThread()) {
-            throw new IllegalAccessException("This method must not be called from the main thread!");
         }
         HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
 
@@ -281,17 +281,16 @@ public class Metrics {
         outputStream.close();
 
         // connection.getInputStream().close(); // We don't care about the response - Just send our data :)
-        if (logFailedRequests) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            String content = "";
-            while ((inputLine = in.readLine()) != null) {
-                content = content + inputLine;
-            }
-            in.close();
 
-            plugin.getLogger().log(Level.INFO, "Response from " + URL + ": " + content);
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        String content = "";
+        while ((inputLine = in.readLine()) != null) {
+            content = content + inputLine;
         }
+        in.close();
+
+        plugin.getLogger().log(Level.INFO, "Response from " + URL + ": " + content);
     }
 
     /**

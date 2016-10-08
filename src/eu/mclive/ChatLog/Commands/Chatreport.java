@@ -74,6 +74,7 @@ public class Chatreport implements CommandExecutor {
 							String URL = plugin.getConfig().getString("URL");
 							sender.sendMessage(plugin.messages.url.replace("%url%", URL + reportid));
 			            	lastReport.put(player, System.currentTimeMillis());
+							plugin.incrementIssuedChatLogs();
 						} else {
 							sender.sendMessage(plugin.messages.errorNotSaved);
 						}
