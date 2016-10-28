@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import eu.mclive.ChatLog.update.UpdateListener;
+import eu.mclive.ChatLog.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -74,6 +76,7 @@ public class ChatLog extends JavaPlugin implements Listener {
 
         this.registerEvents();
         this.registerCommands();
+        this.checkUpdates();
 
         logger.info("Plugin successfully started.");
     }
@@ -98,6 +101,7 @@ public class ChatLog extends JavaPlugin implements Listener {
             logger.info("Using NON-Async ChatEvent.");
             getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         }
+        getServer().getPluginManager().registerEvents(new UpdateListener(this), this);
     }
 
     private void startBstats(eu.mclive.ChatLog.bstats.Metrics bstats) {
@@ -179,6 +183,10 @@ public class ChatLog extends JavaPlugin implements Listener {
                 }
             }
         }, 20L * 10, 20L * 1800);
+    }
+
+    private void checkUpdates() {
+        UpdateUtil.sendUpdateMessage(this);
     }
 
     public Utils getUtils() {

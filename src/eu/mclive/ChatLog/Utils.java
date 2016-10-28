@@ -2,7 +2,6 @@ package eu.mclive.ChatLog;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Created by McLive on 08.10.2016.
