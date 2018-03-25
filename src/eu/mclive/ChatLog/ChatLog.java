@@ -3,6 +3,7 @@ package eu.mclive.ChatLog;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 import eu.mclive.ChatLog.update.UpdateListener;
@@ -102,23 +103,23 @@ public class ChatLog extends JavaPlugin implements Listener {
     }
 
     private void startBstats(eu.mclive.ChatLog.bstats.Metrics bstats) {
-        bstats.addCustomChart(new eu.mclive.ChatLog.bstats.Metrics.SingleLineChart("issued_chatlogs") {
+        bstats.addCustomChart(new eu.mclive.ChatLog.bstats.Metrics.SingleLineChart("issued_chatlogs", new Callable<Integer>() {
             @Override
-            public int getValue() {
+            public Integer call() throws Exception {
                 int value = issuedChatLogs;
                 issuedChatLogs = 0;
                 return value;
             }
-        });
+        }));
 
-        bstats.addCustomChart(new eu.mclive.ChatLog.bstats.Metrics.SingleLineChart("logged_messages") {
+        bstats.addCustomChart(new eu.mclive.ChatLog.bstats.Metrics.SingleLineChart("logged_messages", new Callable<Integer>() {
             @Override
-            public int getValue() {
+            public Integer call() throws Exception {
                 int value = loggedMessages;
                 loggedMessages = 0;
                 return value;
             }
-        });
+        }));
     }
 
     public void incrementIssuedChatLogs() {
