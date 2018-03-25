@@ -40,6 +40,9 @@ public class Metrics {
     // A list with all custom charts
     private final List<CustomChart> charts = new ArrayList<>();
 
+    // Are we the first plugin?
+    private static boolean FIRST;
+
     /**
      * Class constructor.
      *

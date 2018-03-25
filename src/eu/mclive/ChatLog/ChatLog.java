@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 import eu.mclive.ChatLog.Commands.Chatreport;
 import eu.mclive.ChatLog.MySQL.MySQL;
@@ -61,14 +60,12 @@ public class ChatLog extends JavaPlugin implements Listener {
         boolean metrics = getConfig().getBoolean("metrics");
 
         if (metrics) {
-            logger.info("Loading Metrics ...");
+            logger.info("Loading bStats ...");
             try {
-                Metrics me = new Metrics(this);
-                me.start();
                 this.startBstats(new eu.mclive.ChatLog.bstats.Metrics(this));
-                logger.info("Metrics successfully loaded.");
-            } catch (IOException e) {
-                logger.warning("Failled to load Metrics.");
+                logger.info("bStats successfully loaded.");
+            } catch (Exception e) {
+                logger.warning("Failed to load bStats.");
             }
         }
 
