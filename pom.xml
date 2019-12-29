@@ -66,9 +66,15 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <!-- Bukkit API Version, change if out dated -->
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <version>1.15-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
   
