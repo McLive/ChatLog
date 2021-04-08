@@ -30,11 +30,11 @@ public class UUIDHandler implements Listener {
             plugin.logger.info(player + " is offline! Fetching UUID from api.minetools.eu");
             final JSONParser jsonParser = new JSONParser();
             try {
-                HttpURLConnection connection = (HttpURLConnection) new URL("http://api.minetools.eu/uuid/" + player).openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL("https://api.minetools.eu/uuid/" + player).openConnection();
                 try {
                     JSONObject response = (JSONObject) jsonParser.parse(new InputStreamReader(connection.getInputStream()));
 
-                    String uuid = (String) response.get("uuid");
+                    String uuid = (String) response.get("id");
 
                     if (uuid.length() > 4) {
                         plugin.logger.info("UUID from " + player + ": " + uuid.replace("-", ""));
