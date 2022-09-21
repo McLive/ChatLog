@@ -28,7 +28,7 @@ public class Chatreport implements CommandExecutor {
 
         if (cmd.getName().equalsIgnoreCase("chatreport")) {
             Long last = this.lastReport.get(player);
-            Long cooldown = plugin.getConfig().getLong("reportCooldown") * 1000;
+            Long cooldown = plugin.getConfig().getLong("Cooldown") * 1000;
             if (last != null && cooldown > 0) {
                 Long now = System.currentTimeMillis();
                 Long until = last + cooldown;
@@ -46,12 +46,12 @@ public class Chatreport implements CommandExecutor {
             if (args.length >= 1) {
                 final Date now = new Date();
                 final Long timestamp = now.getTime() / 1000;
-                final String server = plugin.getConfig().getString("server");
+                final String server = plugin.getConfig().getString("Server");
                 boolean mode = plugin.getConfig().getBoolean("minigames-mode");
-                int timeBack = plugin.getConfig().getInt("timeBack");
+                int ChatHistory = plugin.getConfig().getInt("Chat-History");
                 if (!mode) { //disabled minigame mode? Only get messages from last 15 minutes!
                     Calendar cal = Calendar.getInstance();
-                    cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) - timeBack); //15 minutes before
+                    cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) - ChatHistory); //15 minutes before
                     plugin.pluginstart = cal.getTimeInMillis() / 1000L;
                 }
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
