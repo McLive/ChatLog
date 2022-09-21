@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -66,7 +69,7 @@ public class MySQL {
     public Connection getConnection() {
         try {
             if (!conn.isValid(1)) {
-                System.out.println("[ChatLog] Lost MySQL-Connection! Reconnecting...");
+                System.out.println(ChatColor.RED + "[ChatLog] Lost MySQL-Connection! Reconnecting...");
                 try {
                     conn = this.openConnection();
                 } catch (Exception e) {
@@ -80,7 +83,7 @@ public class MySQL {
         try (PreparedStatement stmt = this.conn.prepareStatement("SELECT 1")) {
             stmt.executeQuery();
         } catch (SQLException e) {
-            System.out.println("[ChatLog] SELECT 1 - failled. Reconnecting...");
+            System.out.println(ChatColor.RED + "[ChatLog] SELECT 1 - failled. Reconnecting...");
             try {
                 conn = this.openConnection();
             } catch (Exception e1) {
