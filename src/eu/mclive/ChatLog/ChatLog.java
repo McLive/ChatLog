@@ -6,9 +6,10 @@ import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-import eu.mclive.ChatLog.update.UpdateListener;
-import eu.mclive.ChatLog.update.UpdateUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import eu.mclive.ChatLog.Commands.Chatreport;
 import eu.mclive.ChatLog.MySQL.MySQL;
 import eu.mclive.ChatLog.MySQL.MySQLHandler;
+import eu.mclive.ChatLog.update.UpdateListener;
+import eu.mclive.ChatLog.update.UpdateUtil;
 
 public class ChatLog extends JavaPlugin implements Listener {
 
@@ -40,13 +43,13 @@ public class ChatLog extends JavaPlugin implements Listener {
 
     public void onEnable() {
         try {
-            logger.info("Loading MySQL ...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "Loading MySQL ...");
             sql = new MySQL(this);
             sqlHandler = new MySQLHandler(sql, this);
             startRefresh();
-            logger.info("MySQL successfully loaded.");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "MySQL successfully loaded.");
         } catch (Exception e1) {
-            logger.warning("Failled to load MySQL: " + e1.toString());
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Failled to load MySQL: " + e1.toString());
         }
 
         messages = new Messages(this);
@@ -58,15 +61,15 @@ public class ChatLog extends JavaPlugin implements Listener {
         Date now = new Date();
         pluginstart = now.getTime() / 1000L;
 
-        boolean metrics = getConfig().getBoolean("metrics");
+        boolean metrics = getConfig().getBoolean("Metrics");
 
         if (metrics) {
-            logger.info("Loading bStats ...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "Loading bStats ...");
             try {
                 this.startBstats(new eu.mclive.ChatLog.bstats.Metrics(this));
-                logger.info("bStats successfully loaded.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "bStats successfully loaded.");
             } catch (Exception e) {
-                logger.warning("Failed to load bStats.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Failed to load bStats.");
             }
         }
 
@@ -76,16 +79,16 @@ public class ChatLog extends JavaPlugin implements Listener {
         this.registerCommands();
         this.checkUpdates();
 
-        logger.info("Plugin successfully started.");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Plugin successfully started.");
     }
 
     public void onDisable() {
-        logger.info("Plugin successfully stopped.");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Plugin successfully stopped.");
     }
 
     private void setupConfig() {
         getConfig().options().copyDefaults(true);
-        saveConfig();
+        saveDefaultConfig();
     }
 
     private void registerCommands() {
@@ -96,7 +99,7 @@ public class ChatLog extends JavaPlugin implements Listener {
         if (getConfig().getBoolean("use-AsyncChatEvent")) {
             getServer().getPluginManager().registerEvents(new AsyncChatListener(this), this);
         } else {
-            logger.info("Using NON-Async ChatEvent.");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Using NON-Async ChatEvent.");
             getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         }
         getServer().getPluginManager().registerEvents(new UpdateListener(this), this);
@@ -135,11 +138,11 @@ public class ChatLog extends JavaPlugin implements Listener {
             public void run() {
                 Date now = new Date();
                 Long timestamp = now.getTime() / 1000;
-                String server = getConfig().getString("server");
-                String bypassChar = getConfig().getString("bypass-with-beginning-char");
-                String bypassPermission = getConfig().getString("bypass-with-permission");
+                String server = getConfig().getString("Server");
+                String bypassCharacter = getConfig().getString("bypass-character");
+                String bypassPermission = getConfig().getString("bypass-permission");
                 //System.out.println(server + p + msg + timestamp);
-                if (bypassChar.isEmpty() || (msg.startsWith(bypassChar) && !p.hasPermission(bypassPermission)) || !msg.startsWith(bypassChar)) {
+                if (bypassCharacter.isEmpty() || (msg.startsWith(bypassCharacter) && !p.hasPermission(bypassPermission)) || !msg.startsWith(bypassCharacter)) {
                     sqlHandler.addMessage(server, p, msg, timestamp);
                 }
             }
@@ -147,12 +150,12 @@ public class ChatLog extends JavaPlugin implements Listener {
     }
 
     public void cleanup() {
-        final String server = getConfig().getString("server");
+        final String server = getConfig().getString("Server");
         boolean doCleanup = getConfig().getBoolean("Cleanup.enabled");
         int since = getConfig().getInt("Cleanup.since");
 
         if (doCleanup) {
-            logger.info("Doing Cleanup...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "Doing Cleanup...");
             Calendar cal = Calendar.getInstance();
             Date now = new Date();
             cal.setTime(now);
@@ -167,7 +170,7 @@ public class ChatLog extends JavaPlugin implements Listener {
             });
 
         } else {
-            logger.info("Skipping Cleanup because it is disabled.");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Skipping Cleanup because it is disabled.");
         }
     }
 
@@ -177,7 +180,7 @@ public class ChatLog extends JavaPlugin implements Listener {
                 try {
                     sql.refreshConnect();
                 } catch (Exception e) {
-                    logger.warning("Failed to reload MySQL: " + e.toString());
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Failed to reload MySQL: " + e.toString());
                 }
             }
         }, 20L * 10, 20L * 1800);
