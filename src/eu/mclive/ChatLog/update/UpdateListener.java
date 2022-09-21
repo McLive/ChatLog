@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  * Updater inspired from ViaVersion
- * https://github.com/MylesIsCool/ViaVersion/tree/master/src/main/java/us/myles/ViaVersion/update
+ * https://github.com/ViaVersion/ViaVersion/tree/master/common/src/main/java/com/viaversion/viaversion/update
  */
 public class UpdateListener implements Listener {
 
