@@ -19,11 +19,11 @@ import java.util.UUID;
 
 /**
  * Updater inspired from ViaVersion
- * https://github.com/MylesIsCool/ViaVersion/tree/master/src/main/java/us/myles/ViaVersion/update
+ * https://github.com/ViaVersion/ViaVersion/tree/master/common/src/main/java/com/viaversion/viaversion/update
  */
 public class UpdateUtil {
 
-    public final static String PREFIX = ChatColor.GREEN + "" + ChatColor.BOLD + "[ChatLog] " + ChatColor.GREEN;
+    public final static String PREFIX = ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.DARK_GREEN;
     private final static String URL = "http://api.spiget.org/v2/resources/";
     private final static int PLUGIN = 1128;
     private final static String LATEST_VERSION = "/versions/latest";
