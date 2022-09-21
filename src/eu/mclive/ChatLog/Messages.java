@@ -14,7 +14,6 @@ public class Messages {
     public String cmd_color;
     public String playername;
     public String seperator;
-    public String help2;
     public String error;
     public String url;
     public String errorNotSaved;
