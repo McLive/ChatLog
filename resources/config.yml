@@ -1,48 +1,59 @@
-# Default Config
-# 
-# minigames-mode: true/false
-# Set this to "true" if you want a chatreport to show every message from a user since the plugin has started.
-# If you set it to "false", a chatreport will only show messages from a user of the last 15 minutes
-# 
-# timeBack: <minutes>
-# When minigames-mode is set to "false", the plugin will look for messages from a player of the last <minutes> minutes.
-# 
-# reportCooldown: <seconds>
-# Cooldown between /chatreport uses
-# 0 to disable
-# 
-# server: Servername
-# Set the servername here. It will show up on the webpage.
-# 
-# URL: URL to webpage
-# Set the URL to your webpage here. It will be send to the user after doing /chatreport <player>.
-# The reportid will be added at the end.
-# 
-# bypass-with-beginning-chat: 
-# If yout set an custom letter here, every message beginning with that char won't be logged if the player has the permission you set one line down.
-# set it to '' (empty) will log every message. This is helpful for plugins which handles messages like that as a staffChat or something like that.
-# 
-# Cleanup
-# enabled: false -- set it to true and it will delete messages older than 14 days (change with "since")
-# since: 14 -- delete messages older than ... days
-# cleanup will run after serverstart
-# 
-# use-AsyncChatEvent
-# Toggle between AsyncChatEvent and ChatEvent (usefull for tekkit etc...)
-# 
-# metrics:
-# Disable or enable metrics. 
-# 
-minigames-mode: false
-timeBack: 15
-reportCooldown: 60
-server: 'Servername'
+ # minigames-mode: true/false
+ # Set this to "true" if you want a chatreport to show every message from a player since the plugin has started.
+ # Set this to "false" if you want a chatreport to show messages from a player within the specified amount of time below.
+minigames-mode: true
+
+
+ # Chat-History: <minutes>
+ # You must set minigames-mode to "false" for this to function.
+Chat-History: 15
+
+
+ # Server: Servername
+ # Name of server that will show on the webpage.
+Server: 'Servername'
+
+
+ # URL: URL to webpage
+ # Set the URL to your webpage here. This will be sent to the player after using the /chatreport command.
+ # The reportid will automatically be added at the end.
 URL: http://freecraft.eu/chatlog/?report=
-bypass-with-beginning-char: '#'
-bypass-with-permission: 'ChatLog.canbypass'
-Cleanup:
-  enabled: false
-  since: 14
+
+
+ # bypass-character: <character>
+ # Using a custom character will make every message starting with that character not be logged.
+ # This will only work if the player has the permission you set below.
+ # Setting this to '' will log every message. This is helpful if you use other plugins which handles messages.
+bypass-character: '#'
+bypass-permission: 'ChatLog.canbypass'
+
+
+ # Cooldown: <seconds>
+ # Cooldown between /chatreport uses
+ # Set this to "0" to disable.
+Cooldown: 60
+
+
+ # use-AsyncChatEvent
+ # Toggle between AsyncChatEvent and ChatEvent (usefull for tekkit etc...)
 use-AsyncChatEvent: true
-use-UUIDs: false
-metrics: true
+
+
+ # Enable or disable using UUID's
+use-UUIDs: true
+
+
+ # Enable or disable using metrics
+Metrics: true
+
+
+ # Cleanup - Runs when server is started.
+Cleanup:
+ #
+ # enabled: true/false
+ # If set to true, messages older than the days specified below will be deleted. (14 days by default)
+  enabled: false
+ #
+ # since: <days>
+ # How old messages need to be before they are deleted.
+  since: 14
