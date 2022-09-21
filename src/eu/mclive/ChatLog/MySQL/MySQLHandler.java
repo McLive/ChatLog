@@ -62,7 +62,7 @@ public class MySQLHandler {
             st.setLong(3, pluginstart);
             st.setLong(4, timestamp);
             rs = st.executeQuery();
-            rs.first();
+            rs.next();
             //System.out.println("Von " + p2 + " gesendete Nachrichten seit Pluginstart: " + rs.getInt("count") );
             return rs.getInt("count");
         } catch (SQLException e) {
