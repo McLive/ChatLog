@@ -50,7 +50,7 @@ public class Messages {
         prefix = addcolors(cfg.getString("Prefix"));
         url = addcolors(cfg.getString("URL"));
         help_above = addcolors(cfg.getString("Help-Above"));
-        help = addcolors(cfg.getString("Help1"));
+        help = addcolors(cfg.getString("Help"));
         help_below = addcolors(cfg.getString("Help-Below"));
         command_cooldown = addcolors(cfg.getString("Command-Cooldown"));
         no_player_found = addcolors(cfg.getString("No-Player-Found"));
