@@ -32,9 +32,9 @@ public class Messages {
 
         cfg.addDefault("Prefix", "&2[ChatLog] ");
         cfg.addDefault("URL", "&eURL: &a%url%");
-        cfg.addDefault("Help-Above", "§7§m                                                                     ");
+        cfg.addDefault("Help-Above", "&7&m                                                                     ");
         cfg.addDefault("Help", "&e%cmd% <playername> &7- &agets the Chatlog from a player.");
-        cfg.addDefault("Help-Below", "§7§m                                                                     ");
+        cfg.addDefault("Help-Below", "&7&m                                                                     ");
         cfg.addDefault("Command-Cooldown", "&cYou have to wait &b%seconds% &cseconds.");
         cfg.addDefault("No-Player-Found", "&cThat player does not exist.");
         cfg.addDefault("No-Messages-Found", "&cNo messages found from &b%name%");
