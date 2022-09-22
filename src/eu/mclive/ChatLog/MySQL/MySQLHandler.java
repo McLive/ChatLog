@@ -7,6 +7,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.ChatColor;
+
 import org.bukkit.entity.Player;
 
 import eu.mclive.ChatLog.ChatLog;
@@ -74,7 +79,7 @@ public class MySQLHandler {
     public void setReport(String server, List<String> users, Long pluginstart, Long timestamp, String reportid) {
         Connection conn = sql.getConnection();
         ResultSet rs = null;
-        plugin.logger.info("ReportID: " + reportid);
+        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "ReportID: " + ChatColor.YELLOW + reportid);
         for (String user : users) {
             if (plugin.getConfig().getBoolean("use-UUIDs")) {
                 //player could be offline
@@ -111,9 +116,9 @@ public class MySQLHandler {
             st.setLong(2, timestamp);
             int rows = st.executeUpdate();
             if (rows > 0) {
-                plugin.logger.info("Deleted " + rows + " old messages!");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Successfully Deleted " + ChatColor.YELLOW + rows + ChatColor.GREEN + "messages!");
             } else {
-                plugin.logger.info("There were no old messages to delete.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "There were no messages to delete.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
