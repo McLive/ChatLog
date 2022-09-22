@@ -69,7 +69,7 @@ public class MySQL {
     public Connection getConnection() {
         try {
             if (!conn.isValid(1)) {
-                System.out.println(ChatColor.RED + "[ChatLog] Lost MySQL-Connection! Reconnecting...");
+                System.out.println(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Lost MySQL-Connection!" + ChatColor.YELLOW + "Reconnecting...");
                 try {
                     conn = this.openConnection();
                 } catch (Exception e) {
@@ -83,7 +83,7 @@ public class MySQL {
         try (PreparedStatement stmt = this.conn.prepareStatement("SELECT 1")) {
             stmt.executeQuery();
         } catch (SQLException e) {
-            System.out.println(ChatColor.RED + "[ChatLog] SELECT 1 - failled. Reconnecting...");
+            System.out.println(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "SELECT 1 - failled." + ChatColor.YELLOW + "Reconnecting...");
             try {
                 conn = this.openConnection();
             } catch (Exception e1) {
