@@ -116,9 +116,11 @@ public class MySQLHandler {
             st.setLong(2, timestamp);
             int rows = st.executeUpdate();
             if (rows > 0) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Successfully Deleted " + ChatColor.YELLOW + rows + ChatColor.GREEN + "messages!");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "Cleanup Deleted " + ChatColor.AQUA + rows + ChatColor.GREEN + "messages!");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Cleanup complete.");
             } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "There were no messages to delete.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "Cleanup had no messages to delete.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Cleanup complete.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
