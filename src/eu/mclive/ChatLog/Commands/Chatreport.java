@@ -34,14 +34,14 @@ public class Chatreport implements CommandExecutor {
                 Long until = last + cooldown;
                 if (System.currentTimeMillis() <= until) {
                     Long left = (until - now) / 1000;
-                    sender.sendMessage(plugin.messages.cooldown.replace("%seconds%", left.toString()));
+                    sender.sendMessage(plugin.messages.prefix + plugin.messages.command_cooldown.replace("%seconds%", left.toString()));
                     return true;
                 }
             }
             if (args.length == 0) {
-                sender.sendMessage("§7§m                                                                     ");
+                sender.sendMessage(plugin.messages.help_above);
                 sender.sendMessage(plugin.messages.help.replace("%cmd%", "/" + commandLabel));
-                sender.sendMessage("§7§m                                                                     ");
+                sender.sendMessage(plugin.messages.help_below);
             }
             if (args.length >= 1) {
                 final Date now = new Date();
@@ -63,18 +63,18 @@ public class Chatreport implements CommandExecutor {
                             if (messagesSent >= 1) {
                                 users.add(user);
                             } else {
-                                sender.sendMessage(plugin.messages.error.replace("%name%", user));
+                                sender.sendMessage(plugin.messages.prefix + plugin.messages.no_messages_found.replace("%name%", user));
                             }
                         }
                         String reportid = UUID.randomUUID().toString().replace("-", "");
                         if (users != null && users.size() > 0) {
                             plugin.sqlHandler.setReport(server, users, plugin.pluginstart, timestamp, reportid);
                             String URL = plugin.getConfig().getString("URL");
-                            sender.sendMessage(plugin.messages.url.replace("%url%", URL + reportid));
+                            sender.sendMessage(plugin.messages.prefix + plugin.messages.url.replace("%url%", URL + reportid));
                             lastReport.put(player, System.currentTimeMillis());
                             plugin.incrementIssuedChatLogs();
                         } else {
-                            sender.sendMessage(plugin.messages.errorNotSaved);
+                            sender.sendMessage(plugin.messages.prefix + plugin.messages.no_report_saved);
                         }
                     }
                 });
