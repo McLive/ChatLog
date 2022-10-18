@@ -1,53 +1,52 @@
- # minigames-mode: true/false
- # Set this to "true" if you want a chatreport to show every message from a player since the plugin has started.
- # Set this to "false" if you want a chatreport to show messages from a player within the specified amount of time below.
+# minigames-mode: true/false
+# Set this to "true" if you want a chatreport to show every message from a player since the plugin has started.
+# Set this to "false" if you want a chatreport to show messages from a player within the specified amount of time below.
 minigames-mode: true
 
-
- # Chat-History: <minutes>
- # You must set minigames-mode to "false" for this to function.
+# Chat-History: <minutes>
+# You must set minigames-mode to "false" for this to function.
 Chat-History: 15
 
 
- # Server: Servername
- # Name of server that will show on the webpage.
-Server: 'Servername'
 
-
- # URL: URL to webpage
- # Set the URL to your webpage here. This will be sent to the player after using the /chatreport command.
- # The reportid will automatically be added at the end.
+# URL: URL to webpage
+# Set the URL to your webpage here. This will be sent to the player after using the /chatreport command.
+# The reportid will automatically be added to the end.
 URL: http://freecraft.eu/chatlog/?report=
 
+# Server: Servername
+# Name of server that will show on the webpage.
+Server-Name: 'Servername'
 
- # bypass-character: <character>
- # Using a custom character will make every message starting with that character not be logged.
- # This will only work if the player has the permission you set below.
- # Setting this to '' will log every message. This is helpful if you use other plugins which handles messages.
+
+# bypass-character: <character>
+# Using a custom character will make every message starting with that character not be logged.
+# This will only work if the player has the permission you set below.
+# Setting this to '' will log every message. This is helpful if you use other plugins which handles messages.
 bypass-character: '#'
-bypass-permission: 'ChatLog.canbypass'
+bypass-permission: 'chatlog.bypass'
 
 
- # Cooldown: <seconds>
- # Cooldown between /chatreport uses
- # Set this to "0" to disable.
+# Cooldown: <seconds>
+# Cooldown between /chatreport uses
+# Set this to "0" to disable.
 Cooldown: 60
 
 
- # use-AsyncChatEvent
- # Toggle between AsyncChatEvent and ChatEvent (usefull for tekkit etc...)
+# use-AsyncChatEvent: true/false
+# Toggle between AsyncChatEvent and ChatEvent (usefull for tekkit etc...)
 use-AsyncChatEvent: true
 
 
- # Enable or disable using UUID's
+# Enable or disable using UUID's
 use-UUIDs: true
 
 
- # Enable or disable using metrics
+# Enable or disable using metrics
 Metrics: true
 
 
- # Cleanup - Runs when server is started.
+# Cleanup - Runs on server start.
 Cleanup:
  #
  # enabled: true/false
