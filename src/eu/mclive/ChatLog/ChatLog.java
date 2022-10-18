@@ -139,7 +139,7 @@ public class ChatLog extends JavaPlugin implements Listener {
             public void run() {
                 Date now = new Date();
                 Long timestamp = now.getTime() / 1000;
-                String server = getConfig().getString("Server");
+                String server = getConfig().getString("Server-Name");
                 String bypassCharacter = getConfig().getString("bypass-character");
                 String bypassPermission = getConfig().getString("bypass-permission");
                 //System.out.println(server + p + msg + timestamp);
@@ -151,7 +151,7 @@ public class ChatLog extends JavaPlugin implements Listener {
     }
 
     public void cleanup() {
-        final String server = getConfig().getString("Server");
+        final String server = getConfig().getString("Server-Name");
         boolean doCleanup = getConfig().getBoolean("Cleanup.enabled");
         int since = getConfig().getInt("Cleanup.since");
 
@@ -171,7 +171,7 @@ public class ChatLog extends JavaPlugin implements Listener {
             });
 
         } else {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Skipping Cleanup|" + ChatColor.AQUA + " disabled.");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Skipping Cleanup| " + ChatColor.AQUA + "disabled.");
         }
     }
 
