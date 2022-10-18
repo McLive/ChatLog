@@ -34,11 +34,11 @@ public class MySQL {
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 
         String db = "database.";
-        cfg.addDefault(db + "host", "leer");
+        cfg.addDefault(db + "host", "host");
+        cfg.addDefault(db + "user", "user");
+        cfg.addDefault(db + "password", "password");
+        cfg.addDefault(db + "database", "database");
         cfg.addDefault(db + "port", 3306);
-        cfg.addDefault(db + "user", "leer");
-        cfg.addDefault(db + "password", "leer");
-        cfg.addDefault(db + "database", "leer");
         cfg.options().copyDefaults(true);
         try {
             cfg.save(file);
@@ -47,22 +47,22 @@ public class MySQL {
         }
 
         host = cfg.getString(db + "host");
-        port = cfg.getInt(db + "port");
         user = cfg.getString(db + "user");
         password = cfg.getString(db + "password");
         database = cfg.getString(db + "database");
+        port = cfg.getInt(db + "port");
 
         conn = openConnection();
     }
 
     public Connection openConnection() throws Exception {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
         return conn;
     }
 
     public void refreshConnect() throws Exception {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
     }
 
