@@ -56,3 +56,5 @@ Cleanup:
  # since: <days>
  # How old messages need to be before they are deleted.
   since: 14
+
+update-check: true

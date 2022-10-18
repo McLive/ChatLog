@@ -29,6 +29,7 @@ public class UpdateUtil {
     private final static String LATEST_VERSION = "/versions/latest";
 
     public static void sendUpdateMessage(final UUID uuid, final Plugin plugin) {
+		if (plugin.getConfig().getBoolean("update-check"))
         new BukkitRunnable() {
 
             @Override
@@ -51,6 +52,7 @@ public class UpdateUtil {
     }
 
     public static void sendUpdateMessage(final Plugin plugin) {
+		if (plugin.getConfig().getBoolean("update-check"))
         new BukkitRunnable() {
 
             @Override

@@ -20,8 +20,8 @@ public class UpdateListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        if (e.getPlayer().hasPermission(Permission.UPDATE)) {
-            //       && plugin.getConfig().isCheckForUpdates()) {
+        if (e.getPlayer().hasPermission(Permission.UPDATE)
+			&& (plugin.getConfig().getBoolean("update-check"))) {
             UpdateUtil.sendUpdateMessage(e.getPlayer().getUniqueId(), plugin);
         }
     }
