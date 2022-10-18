@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.ChatColor;
 
 import eu.mclive.ChatLog.ChatLog;
 
@@ -46,7 +47,7 @@ public class Chatreport implements CommandExecutor {
             if (args.length >= 1) {
                 final Date now = new Date();
                 final Long timestamp = now.getTime() / 1000;
-                final String server = plugin.getConfig().getString("Server");
+                final String server = plugin.getConfig().getString("Server-Name");
                 boolean mode = plugin.getConfig().getBoolean("minigames-mode");
                 int ChatHistory = plugin.getConfig().getInt("Chat-History");
                 if (!mode) { //disabled minigame mode? Only get messages from last 15 minutes!
