@@ -6,7 +6,7 @@
 
   <groupId>eu.mclive</groupId>
   <artifactId>ChatLog</artifactId>
-  <version>1.13.2-release</version>
+  <version>1.13.3-release</version>
   <name>Chatlog</name>
   <description>Chatlog generator for reporting players</description>
 
