@@ -44,7 +44,7 @@ public class UUIDHandler implements Listener {
                         return uuid.replace("-", "");
                     } else {
                         //UUID should only be used on premium servers. It'll return null if player is not premium.
-                        Bukkit.getConsoleSender().sendMessage(plugin.messages.prefix + plugin.messages.no_player_found);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.AQUA + ChatColor.RED + " That player does not exist.");
                         return null;
                     }
                 } catch (ParseException e) {
