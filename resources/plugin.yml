@@ -1,6 +1,6 @@
 name: ChatLog
 descriptipn: Chatlog generator to report players
-version: 1.13.4
+version: 1.13.5
 api-version: 1.13
 author: McLive
 website: www.freecraft.eu
@@ -11,3 +11,7 @@ commands:
   chatreport:
     aliases: [chatlog]
     description: Generate a chatlog to report players
+
+permissions:
+  chatlog.command:
+    description: Allows /chatreport

@@ -27,7 +27,9 @@ public class Chatreport implements CommandExecutor {
     public boolean onCommand(final CommandSender sender, Command cmd, String commandLabel, final String[] args) {
         final String player = sender.getName();
 
-        if (cmd.getName().equalsIgnoreCase("chatreport")) {
+        if (cmd.getName().equalsIgnoreCase("chatreport"))
+			if (sender.hasPermission("chatlog.command"))
+		{
             Long last = this.lastReport.get(player);
             Long cooldown = plugin.getConfig().getLong("Cooldown") * 1000;
             if (last != null && cooldown > 0) {
@@ -81,6 +83,11 @@ public class Chatreport implements CommandExecutor {
                 });
             }
         }
+                else
+                {
+                            sender.sendMessage(plugin.messages.prefix + plugin.messages.no_permission);
+                    return true;
+                }
         return false;
     }
 

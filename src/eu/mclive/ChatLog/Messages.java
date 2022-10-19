@@ -16,6 +16,7 @@ public class Messages {
     public String help;
     public String help_below;
     public String command_cooldown;
+    public String no_permission;
     public String no_messages_found;
     public String no_report_saved;
     public String cmd_color;
@@ -35,6 +36,7 @@ public class Messages {
         cfg.addDefault("Help", "&e%cmd% <playername> &7- &agets the Chatlog from a player.");
         cfg.addDefault("Help-Below", "&7&m                                                                     ");
         cfg.addDefault("Command-Cooldown", "&cYou have to wait %seconds% seconds.");
+        cfg.addDefault("No-Permission", "&cPermission denied.");
         cfg.addDefault("No-Messages-Found", "&cNo messages found from %name%");
         cfg.addDefault("No-Report-Saved", "&cNo report saved");
 
@@ -51,6 +53,7 @@ public class Messages {
         help = addcolors(cfg.getString("Help"));
         help_below = addcolors(cfg.getString("Help-Below"));
         command_cooldown = addcolors(cfg.getString("Command-Cooldown"));
+        no_permission = addcolors(cfg.getString("No-Permission"));
         no_messages_found = addcolors(cfg.getString("No-Messages-Found"));
         no_report_saved = addcolors(cfg.getString("No-Report-Saved"));
 
