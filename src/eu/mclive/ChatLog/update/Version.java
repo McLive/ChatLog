@@ -1,13 +1,13 @@
 package eu.mclive.ChatLog.update;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Updater inspired from ViaVersion
- * https://github.com/MylesIsCool/ViaVersion/tree/master/src/main/java/us/myles/ViaVersion/update
+ * https://github.com/ViaVersion/ViaVersion/tree/master/common/src/main/java/com/viaversion/viaversion/update
  */
 public class Version implements Comparable<Version> {
     private static Pattern semVer = Pattern.compile("(?<a>0|[1-9]\\d*)\\.(?<b>0|[1-9]\\d*)(?:\\.(?<c>0|[1-9]\\d*))?(?:-(?<tag>[A-z0-9.-]*))?");

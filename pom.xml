@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
   <groupId>eu.mclive</groupId>
-  <artifactId>chatlog</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>ChatLog</artifactId>
+  <version>1.13.6-release</version>
   <name>Chatlog</name>
-  <description>Chatlog to report players</description>
+  <description>Chatlog generator to report players</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -26,7 +26,7 @@
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.10.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -35,7 +35,7 @@
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.4.0</version>
                 <configuration>
                     <artifactSet>
                         <includes>
@@ -74,7 +74,7 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <!-- Bukkit API Version, change if out dated -->
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <type>jar</type>
         </dependency>
@@ -84,6 +84,11 @@
             <version>1.1.1</version>
             <scope>compile</scope>
         </dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.12.0</version>
+</dependency>
     </dependencies>
   
 </project>

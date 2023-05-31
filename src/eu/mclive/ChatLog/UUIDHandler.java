@@ -7,6 +7,9 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.json.simple.JSONObject;
@@ -24,10 +27,10 @@ public class UUIDHandler implements Listener {
         Player p = Bukkit.getServer().getPlayer(player);
         if (p != null) {
             UUID uuid = Bukkit.getServer().getPlayer(player).getUniqueId();
-            plugin.logger.info(p.getName() + " is online! UUID: " + uuid.toString().replace("-", ""));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.AQUA + p.getName() + ChatColor.GREEN + " is online! UUID: " + ChatColor.YELLOW + uuid.toString().replace("-", ""));
             return uuid.toString().replace("-", "");
         } else {
-            plugin.logger.info(player + " is offline! Fetching UUID from api.minetools.eu");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.AQUA + player + ChatColor.RED + " is offline! Fetching UUID from" + ChatColor.YELLOW +" https://api.minetools.eu/");
             final JSONParser jsonParser = new JSONParser();
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL("https://api.minetools.eu/uuid/" + player).openConnection();
@@ -36,12 +39,12 @@ public class UUIDHandler implements Listener {
 
                     String uuid = (String) response.get("id");
 
-                    if (uuid.length() > 4) {
-                        plugin.logger.info("UUID from " + player + ": " + uuid.replace("-", ""));
+                    if (uuid != null) {
+                        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.AQUA + player + "'s " + "UUID: " + ChatColor.YELLOW + uuid.replace("-", ""));
                         return uuid.replace("-", "");
                     } else {
                         //UUID should only be used on premium servers. It'll return null if player is not premium.
-                        plugin.logger.info("Minetools returned null! " + player + " is no premium user!");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.AQUA + ChatColor.RED + " That player does not exist.");
                         return null;
                     }
                 } catch (ParseException e) {

@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  * Updater inspired from ViaVersion
- * https://github.com/MylesIsCool/ViaVersion/tree/master/src/main/java/us/myles/ViaVersion/update
+ * https://github.com/ViaVersion/ViaVersion/tree/master/common/src/main/java/com/viaversion/viaversion/update
  */
 public class UpdateListener implements Listener {
 
@@ -20,8 +20,8 @@ public class UpdateListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        if (e.getPlayer().hasPermission(Permission.UPDATE)) {
-            //       && plugin.getConfig().isCheckForUpdates()) {
+        if (e.getPlayer().hasPermission(Permission.UPDATE)
+			&& (plugin.getConfig().getBoolean("update-check"))) {
             UpdateUtil.sendUpdateMessage(e.getPlayer().getUniqueId(), plugin);
         }
     }

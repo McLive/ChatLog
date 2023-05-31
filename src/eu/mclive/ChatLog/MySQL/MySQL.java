@@ -8,6 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -31,11 +35,11 @@ public class MySQL {
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 
         String db = "database.";
-        cfg.addDefault(db + "host", "leer");
+        cfg.addDefault(db + "host", "host");
+        cfg.addDefault(db + "user", "user");
+        cfg.addDefault(db + "password", "password");
+        cfg.addDefault(db + "database", "database");
         cfg.addDefault(db + "port", 3306);
-        cfg.addDefault(db + "user", "leer");
-        cfg.addDefault(db + "password", "leer");
-        cfg.addDefault(db + "database", "leer");
         cfg.options().copyDefaults(true);
         try {
             cfg.save(file);
@@ -44,29 +48,29 @@ public class MySQL {
         }
 
         host = cfg.getString(db + "host");
-        port = cfg.getInt(db + "port");
         user = cfg.getString(db + "user");
         password = cfg.getString(db + "password");
         database = cfg.getString(db + "database");
+        port = cfg.getInt(db + "port");
 
         conn = openConnection();
     }
 
     public Connection openConnection() throws Exception {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         Connection conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
         return conn;
     }
 
     public void refreshConnect() throws Exception {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         conn = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database, this.user, this.password);
     }
 
     public Connection getConnection() {
         try {
             if (!conn.isValid(1)) {
-                System.out.println("[ChatLog] Lost MySQL-Connection! Reconnecting...");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Lost MySQL-Connection!" + ChatColor.YELLOW + "Reconnecting...");
                 try {
                     conn = this.openConnection();
                 } catch (Exception e) {
@@ -80,7 +84,7 @@ public class MySQL {
         try (PreparedStatement stmt = this.conn.prepareStatement("SELECT 1")) {
             stmt.executeQuery();
         } catch (SQLException e) {
-            System.out.println("[ChatLog] SELECT 1 - failled. Reconnecting...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "SELECT 1 - failed." + ChatColor.YELLOW + "Reconnecting...");
             try {
                 conn = this.openConnection();
             } catch (Exception e1) {
@@ -90,7 +94,7 @@ public class MySQL {
         return conn;
     }
 
-    public boolean hasConnecion() {
+    public boolean hasConnection() {
         try {
             return conn != null || conn.isValid(1);
         } catch (SQLException e) {
@@ -107,7 +111,7 @@ public class MySQL {
         }
     }
 
-    public void closeRessources(ResultSet rs, PreparedStatement st) {
+    public void closeResources(ResultSet rs, PreparedStatement st) {
         if (rs != null) {
             try {
                 rs.close();
@@ -126,7 +130,10 @@ public class MySQL {
 
     public void closeConnection() {
         try {
-            conn.close();
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "MySQL successfully closed.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
