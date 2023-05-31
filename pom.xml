@@ -6,7 +6,7 @@
 
   <groupId>eu.mclive</groupId>
   <artifactId>ChatLog</artifactId>
-  <version>1.13.5-release</version>
+  <version>1.13.6-release</version>
   <name>Chatlog</name>
   <description>Chatlog generator to report players</description>
 
@@ -74,7 +74,7 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <!-- Bukkit API Version, change if out dated -->
-            <version>1.19.2-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <type>jar</type>
         </dependency>

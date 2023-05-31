@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -69,7 +70,7 @@ public class MySQL {
     public Connection getConnection() {
         try {
             if (!conn.isValid(1)) {
-                System.out.println(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Lost MySQL-Connection!" + ChatColor.YELLOW + "Reconnecting...");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Lost MySQL-Connection!" + ChatColor.YELLOW + "Reconnecting...");
                 try {
                     conn = this.openConnection();
                 } catch (Exception e) {
@@ -83,7 +84,7 @@ public class MySQL {
         try (PreparedStatement stmt = this.conn.prepareStatement("SELECT 1")) {
             stmt.executeQuery();
         } catch (SQLException e) {
-            System.out.println(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "SELECT 1 - failled." + ChatColor.YELLOW + "Reconnecting...");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "SELECT 1 - failed." + ChatColor.YELLOW + "Reconnecting...");
             try {
                 conn = this.openConnection();
             } catch (Exception e1) {
@@ -93,7 +94,7 @@ public class MySQL {
         return conn;
     }
 
-    public boolean hasConnecion() {
+    public boolean hasConnection() {
         try {
             return conn != null || conn.isValid(1);
         } catch (SQLException e) {
@@ -110,7 +111,7 @@ public class MySQL {
         }
     }
 
-    public void closeRessources(ResultSet rs, PreparedStatement st) {
+    public void closeResources(ResultSet rs, PreparedStatement st) {
         if (rs != null) {
             try {
                 rs.close();
@@ -129,7 +130,10 @@ public class MySQL {
 
     public void closeConnection() {
         try {
-            conn.close();
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "MySQL successfully closed.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

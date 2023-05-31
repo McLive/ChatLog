@@ -4,11 +4,8 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -23,7 +20,6 @@ import eu.mclive.ChatLog.update.UpdateUtil;
 public class ChatLog extends JavaPlugin implements Listener {
 
     public UUIDHandler UUIDHandler;
-    public Logger logger = getLogger();
     public MySQL sql;
     public Messages messages;
     public MySQLHandler sqlHandler;
@@ -83,6 +79,9 @@ public class ChatLog extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
+		if (sql != null) {
+			sql.closeConnection();
+		}
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Plugin stopped.");
     }
 
