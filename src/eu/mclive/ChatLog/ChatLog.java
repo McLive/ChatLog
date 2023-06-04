@@ -1,9 +1,9 @@
 package eu.mclive.ChatLog;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +20,7 @@ import eu.mclive.ChatLog.update.UpdateUtil;
 public class ChatLog extends JavaPlugin implements Listener {
 
     public UUIDHandler UUIDHandler;
+    public Logger logger = getLogger();
     public MySQL sql;
     public Messages messages;
     public MySQLHandler sqlHandler;
@@ -43,6 +44,7 @@ public class ChatLog extends JavaPlugin implements Listener {
             sql = new MySQL(this);
             sqlHandler = new MySQLHandler(sql, this);
             startRefresh();
+			UpdateUtil.scheduleUpdateChecker(this);
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "MySQL successfully loaded.");
         } catch (Exception e1) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.RED + "Failled to load MySQL: " + e1.toString());
@@ -73,10 +75,14 @@ public class ChatLog extends JavaPlugin implements Listener {
 
         this.registerEvents();
         this.registerCommands();
-        this.checkUpdates();
-
-        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Plugin started.");
-    }
+		boolean performUpdateCheck = getConfig().getBoolean("update-check");
+		if (performUpdateCheck) {
+			Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.YELLOW + "Checking for updates...");
+			UpdateUtil.checkForUpdates(this);
+			}
+			
+			Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Plugin started.");
+			}
 
     public void onDisable() {
 		if (sql != null) {
