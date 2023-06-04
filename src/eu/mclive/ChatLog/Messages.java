@@ -47,25 +47,38 @@ public class Messages {
             e.printStackTrace();
         }
 
-        prefix = addcolors(cfg.getString("Prefix"));
-        url = addcolors(cfg.getString("URL"));
-        help_above = addcolors(cfg.getString("Help-Above"));
-        help = addcolors(cfg.getString("Help"));
-        help_below = addcolors(cfg.getString("Help-Below"));
-        command_cooldown = addcolors(cfg.getString("Command-Cooldown"));
-        no_permission = addcolors(cfg.getString("No-Permission"));
-        no_messages_found = addcolors(cfg.getString("No-Messages-Found"));
-        no_report_saved = addcolors(cfg.getString("No-Report-Saved"));
+        prefix = addColors(cfg.getString("Prefix"));
+        url = addColors(cfg.getString("URL"));
+        help_above = addColors(cfg.getString("Help-Above"));
+        help = addColors(cfg.getString("Help"));
+        help_below = addColors(cfg.getString("Help-Below"));
+        command_cooldown = addColors(cfg.getString("Command-Cooldown"));
+        no_permission = addColors(cfg.getString("No-Permission"));
+        no_messages_found = addColors(cfg.getString("No-Messages-Found"));
+        no_report_saved = addColors(cfg.getString("No-Report-Saved"));
 
     }
+	
+    public void MessagesReload() {
+        cfg = YamlConfiguration.loadConfiguration(file);
+        prefix = addColors(cfg.getString("Prefix"));
+        url = addColors(cfg.getString("URL"));
+        help_above = addColors(cfg.getString("Help-Above"));
+        help = addColors(cfg.getString("Help"));
+        help_below = addColors(cfg.getString("Help-Below"));
+        command_cooldown = addColors(cfg.getString("Command-Cooldown"));
+        no_permission = addColors(cfg.getString("No-Permission"));
+        no_messages_found = addColors(cfg.getString("No-Messages-Found"));
+        no_report_saved = addColors(cfg.getString("No-Report-Saved"));
+    }
 
-    private String addcolors(String msg) {
+    private String addColors(String msg) {
         msg = ChatColor.translateAlternateColorCodes('&', msg);
         return msg;
     }
 
     public String help() {
-        return addcolors(cfg.getString("help"));
+        return addColors(cfg.getString("help"));
     }
 
 }

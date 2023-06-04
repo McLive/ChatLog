@@ -7,8 +7,6 @@ import java.net.URL;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -18,19 +16,27 @@ import org.json.simple.parser.ParseException;
 
 public class UUIDHandler implements Listener {
     private ChatLog plugin;
+	private boolean messageSent;
 
     public UUIDHandler(ChatLog plugin) {
         this.plugin = plugin;
+		this.messageSent = false;
     }
 
     public String getUUID(String player) {
         Player p = Bukkit.getServer().getPlayer(player);
         if (p != null) {
             UUID uuid = Bukkit.getServer().getPlayer(player).getUniqueId();
+			if (!messageSent) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.AQUA + p.getName() + ChatColor.GREEN + " is online! UUID: " + ChatColor.YELLOW + uuid.toString().replace("-", ""));
+			messageSent = true;
+			}
             return uuid.toString().replace("-", "");
         } else {
+			if (!messageSent) {
             Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.AQUA + player + ChatColor.RED + " is offline! Fetching UUID from" + ChatColor.YELLOW +" https://api.minetools.eu/");
+			messageSent = true;
+			}
             final JSONParser jsonParser = new JSONParser();
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL("https://api.minetools.eu/uuid/" + player).openConnection();
@@ -56,5 +62,9 @@ public class UUIDHandler implements Listener {
             return null;
 
         }
+    }
+		
+    public void resetMessage() {
+        messageSent = false;
     }
 }

@@ -58,3 +58,5 @@ Cleanup:
   since: 14
 
 update-check: true
+# How often to check for updates in days, defaults to 1 day
+update-interval: 1
