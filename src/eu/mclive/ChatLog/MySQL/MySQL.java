@@ -132,7 +132,7 @@ public class MySQL {
         try {
             if (conn != null && !conn.isClosed()) {
                 conn.close();
-                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "MySQL successfully closed.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "MySQL successfully unloaded.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
