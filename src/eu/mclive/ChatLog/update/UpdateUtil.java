@@ -28,6 +28,47 @@ public class UpdateUtil {
     private final static int PLUGIN = 1128;
     private final static String LATEST_VERSION = "/versions/latest";
 
+	public static void scheduleUpdateChecker(final Plugin plugin) {
+		boolean updateCheckEnabled = plugin.getConfig().getBoolean("update-check");
+    if (!updateCheckEnabled) {
+        Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Update check: " + ChatColor.AQUA + "disabled.");
+        return;
+    }
+
+    long updateInterval = plugin.getConfig().getLong("update-interval");
+	if (updateInterval <= 0) {
+		updateInterval = 1;
+    }
+	long delay = 5 * 20;
+	long interval = updateInterval * 24 * 60 * 60 * 20;
+    new BukkitRunnable() {
+        @Override
+        public void run() {
+            checkForUpdates(plugin);
+        }
+    }.runTaskTimer(plugin, delay, interval);
+	Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[ChatLog] " + ChatColor.GREEN + "Update check: " + ChatColor.AQUA + "enabled.");
+}
+
+    public static void checkForUpdates(final Plugin plugin) {
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    final String message = getUpdateMessage(true, plugin);
+                    if (message != null) {
+                        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                plugin.getLogger().warning(message);
+                        }
+                    });
+                } else {
+                    Bukkit.getLogger().info("No update available.");
+                }
+            }
+        });
+}
+
     public static void sendUpdateMessage(final UUID uuid, final Plugin plugin) {
 		if (plugin.getConfig().getBoolean("update-check"))
         new BukkitRunnable() {
